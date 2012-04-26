@@ -1,0 +1,23 @@
+diff -Naur imageworks-OpenColorIO-b3cb224.orig/CMakeLists.txt imageworks-OpenColorIO-b3cb224/CMakeLists.txt
+--- imageworks-OpenColorIO-b3cb224.orig/CMakeLists.txt	2012-04-17 19:08:16.000000000 -0500
++++ imageworks-OpenColorIO-b3cb224/CMakeLists.txt	2012-04-23 21:24:37.571876995 -0500
+@@ -28,6 +28,7 @@
+ option(OCIO_USE_BOOST_PTR "Set to ON to enable boost shared_ptr (necessary when tr1 is not available)" OFF)
+ 
+ option(OCIO_PYGLUE_RESPECT_ABI "If ON, the Python module install path includes Python UCS version" OFF)
++option(OCIO_PYGLUE_SONAME "If ON, soname/soversion will be set for Python module libraries." OFF)
+ if(UNIX AND NOT APPLE)
+     option(USE_EXTERNAL_YAML "Use system installed yaml-cpp library." OFF)
+     option(USE_EXTERNAL_TINYXML "Use system installed tinyxml library." OFF)
+diff -Naur imageworks-OpenColorIO-b3cb224.orig/src/pyglue/CMakeLists.txt imageworks-OpenColorIO-b3cb224/src/pyglue/CMakeLists.txt
+--- imageworks-OpenColorIO-b3cb224.orig/src/pyglue/CMakeLists.txt	2012-04-17 19:08:16.000000000 -0500
++++ imageworks-OpenColorIO-b3cb224/src/pyglue/CMakeLists.txt	2012-04-23 21:22:20.857218546 -0500
+@@ -92,7 +92,7 @@
+ # We should explore whether this should be built as a normal dylib, instead
+ # of as a bundle. See https://github.com/imageworks/OpenColorIO/pull/175
+ 
+-if(NOT APPLE)
++if(OCIO_PYGLUE_SONAME)
+     message(STATUS "Setting PyOCIO SOVERSION to: ${SOVERSION}")
+     set_target_properties(PyOpenColorIO PROPERTIES
+         VERSION ${OCIO_VERSION}
