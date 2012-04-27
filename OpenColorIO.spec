@@ -91,7 +91,11 @@ rm -f ext/yaml*
 rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
        -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
+%if 0%{?el6}
+       -DOCIO_BUILD_DOCS=OFF \
+%else
        -DOCIO_BUILD_DOCS=ON \
+%endif
        -DOCIO_BUILD_TESTS=ON \
        -DOCIO_LINK_PYGLUE=ON \
        -DOCIO_PYGLUE_SONAME=OFF \
