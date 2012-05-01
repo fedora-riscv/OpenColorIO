@@ -86,6 +86,11 @@ rm -f ext/lcms*
 rm -f ext/tinyxml*
 rm -f ext/yaml*
 
+# Try building for EPEL w/ cmake 2.6.
+%if 0%{?el6}
+sed -i 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 2.6)|' CMakeLists.txt
+%endif
+
 
 %build
 rm -rf build && mkdir build && pushd build
