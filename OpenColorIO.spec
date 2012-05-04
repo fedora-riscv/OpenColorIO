@@ -20,6 +20,7 @@ Source0:        imageworks-%{name}-v%{version}-0-%{githash1}.tar.gz
 
 Patch0:         OpenColorIO-1.0.7-pylib_no_soname.patch
 Patch1:         OpenColorIO-1.0.7-docfix.patch
+Patch2:         OpenColorIO-1.0.7-link-yaml_cpp.patch
 
 # Utilities
 BuildRequires:  cmake
@@ -80,6 +81,9 @@ Development libraries and headers for %{name}.
 %patch0 -p1 -b .pylib
 # Exclude hidden files from being packaged.
 %patch1 -p1 -b .docfix
+# Fix for proper linking with cmake 2.6.
+%patch2 -p1 -b .link_yaml
+
 
 # Remove what bundled libraries
 rm -f ext/lcms*

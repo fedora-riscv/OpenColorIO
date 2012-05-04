@@ -1,0 +1,11 @@
+diff -Naur imageworks-OpenColorIO-b3cb224.orig/src/apps/ociocheck/CMakeLists.txt imageworks-OpenColorIO-b3cb224/src/apps/ociocheck/CMakeLists.txt
+--- imageworks-OpenColorIO-b3cb224.orig/src/apps/ociocheck/CMakeLists.txt	2012-04-17 19:08:16.000000000 -0500
++++ imageworks-OpenColorIO-b3cb224/src/apps/ociocheck/CMakeLists.txt	2012-05-04 15:00:26.292732699 -0500
+@@ -12,6 +12,7 @@
+ 
+ target_link_libraries(ociocheck
+     OpenColorIO
++    ${YAML_CPP_LIBRARIES}
+     )
+ 
+ install(TARGETS ociocheck DESTINATION ${CMAKE_INSTALL_EXEC_PREFIX}/bin)
