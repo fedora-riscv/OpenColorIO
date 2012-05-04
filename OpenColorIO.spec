@@ -86,10 +86,12 @@ rm -f ext/lcms*
 rm -f ext/tinyxml*
 rm -f ext/yaml*
 
-# Try building for EPEL w/ cmake 2.6.
+# Deal with building for EPEL w/ cmake 2.6.
 %if 0%{?el6}
 sed -i -e 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 2.6)|' \
     -e '/include(ExternalProject)/d' CMakeLists.txt
+sed -i 's|pkg_check_modules(LCMS QUIET lcms2)|pkg_check_modules(LCMS lcms2)|' \
+    src/apps/ociobakelut/CMakeLists.txt
 %endif
 
 
