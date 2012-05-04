@@ -124,10 +124,10 @@ make install DESTDIR=%{buildroot}
 
 # Generate man pages
 mkdir -p %{buildroot}%{_mandir}/man1
-help2man -N -s 1 --version-string=%{version} \
+help2man -N -s 1 %{?fedora:--version-string=%{version}} \
          -o %{buildroot}%{_mandir}/man1/ociocheck.1 \
          src/apps/ociocheck/ociocheck
-help2man -N -s 1 --version-string=%{version} \
+help2man -N -s 1 %{?fedora:--version-string=%{version}} \
          -o %{buildroot}%{_mandir}/man1/ociobakelut.1 \
          src/apps/ociobakelut/ociobakelut
 
