@@ -20,7 +20,6 @@ Source0:        imageworks-%{name}-v%{version}-0-%{githash1}.tar.gz
 
 Patch0:         OpenColorIO-1.0.7-pylib_no_soname.patch
 Patch1:         OpenColorIO-1.0.7-docfix.patch
-Patch2:         OpenColorIO-1.0.7-link-yaml_cpp.patch
 
 # Utilities
 BuildRequires:  cmake
@@ -56,6 +55,7 @@ solutions, OCIO is geared towards motion-picture post production, with an
 emphasis on visual effects and animation color pipelines.
 
 
+%if ! 0%{?el6}
 %package doc
 BuildArch:      noarch
 Summary:        API Documentation for %{name}
@@ -64,6 +64,7 @@ Requires:       %{name} = %{version}-%{release}
 
 %description doc
 API documentation for %{name}.
+%endif
 
 
 %package devel
@@ -81,8 +82,6 @@ Development libraries and headers for %{name}.
 %patch0 -p1 -b .pylib
 # Exclude hidden files from being packaged.
 %patch1 -p1 -b .docfix
-# Fix for proper linking with cmake 2.6.
-%patch2 -p1 -b .link_yaml
 
 
 # Remove what bundled libraries
@@ -104,6 +103,7 @@ rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
        -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
 %if 0%{?el6}
+       -DCMAKE_SKIP_RPATH=OFF \
        -DOCIO_BUILD_DOCS=OFF \
 %else
        -DOCIO_BUILD_DOCS=ON \
@@ -154,8 +154,10 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 %{_mandir}/man1/*
 %{python_sitearch}/*.so
 
+%if ! 0%{?el6}
 %files doc
 %doc %{_docdir}/%{name}/
+%endif
 
 %files devel
 %{_includedir}/OpenColorIO/
