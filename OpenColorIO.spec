@@ -7,6 +7,11 @@
 %filter_setup
 }
 
+# Use cmake28 package on EL builds.
+%if 0%{?el6}
+%global %cmake %cmake28 -DCMAKE_SKIP_RPATH=OFF
+%endif
+
 Name:           OpenColorIO
 Version:        1.0.7
 Release:        4%{?dist}
@@ -90,11 +95,8 @@ rm -f ext/yaml*
 
 %build
 rm -rf build && mkdir build && pushd build
-%cmake28 -DOCIO_BUILD_STATIC=OFF \
+%cmake   -DOCIO_BUILD_STATIC=OFF \
          -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
-%if 0%{?el6}
-         -DCMAKE_SKIP_RPATH=OFF \
-%endif
          -DOCIO_BUILD_DOCS=ON \
          -DOCIO_BUILD_TESTS=ON \
          -DOCIO_LINK_PYGLUE=ON \
