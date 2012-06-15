@@ -22,7 +22,7 @@ Patch0:         OpenColorIO-1.0.7-pylib_no_soname.patch
 Patch1:         OpenColorIO-1.0.7-docfix.patch
 
 # Utilities
-BuildRequires:  cmake
+BuildRequires:  cmake28
 BuildRequires:  help2man
 
 # Libraries
@@ -55,7 +55,6 @@ solutions, OCIO is geared towards motion-picture post production, with an
 emphasis on visual effects and animation color pipelines.
 
 
-%if ! 0%{?el6}
 %package doc
 BuildArch:      noarch
 Summary:        API Documentation for %{name}
@@ -64,7 +63,6 @@ Requires:       %{name} = %{version}-%{release}
 
 %description doc
 API documentation for %{name}.
-%endif
 
 
 %package devel
@@ -89,14 +87,6 @@ rm -f ext/lcms*
 rm -f ext/tinyxml*
 rm -f ext/yaml*
 
-# Deal with building for EPEL w/ cmake 2.6.
-%if 0%{?el6}
-sed -i -e 's|cmake_minimum_required(VERSION 2.8)|cmake_minimum_required(VERSION 2.6)|' \
-    -e '/include(ExternalProject)/d' CMakeLists.txt
-sed -i 's|pkg_check_modules(LCMS QUIET lcms2)|pkg_check_modules(LCMS lcms2)|' \
-    src/apps/ociobakelut/CMakeLists.txt
-%endif
-
 
 %build
 rm -rf build && mkdir build && pushd build
@@ -104,9 +94,6 @@ rm -rf build && mkdir build && pushd build
        -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
 %if 0%{?el6}
        -DCMAKE_SKIP_RPATH=OFF \
-       -DOCIO_BUILD_DOCS=OFF \
-%else
-       -DOCIO_BUILD_DOCS=ON \
 %endif
        -DOCIO_BUILD_TESTS=ON \
        -DOCIO_LINK_PYGLUE=ON \
@@ -154,10 +141,8 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 %{_mandir}/man1/*
 %{python_sitearch}/*.so
 
-%if ! 0%{?el6}
 %files doc
 %doc %{_docdir}/%{name}/
-%endif
 
 %files devel
 %{_includedir}/OpenColorIO/
