@@ -9,7 +9,7 @@
 
 # Use cmake28 package on EL builds.
 %if 0%{?el6}
-%global %cmake %cmake28 -DCMAKE_SKIP_RPATH=OFF
+%define %cmake %cmake28 -DCMAKE_SKIP_RPATH=OFF
 %endif
 
 Name:           OpenColorIO
