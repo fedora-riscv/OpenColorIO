@@ -95,6 +95,7 @@ rm -rf build && mkdir build && pushd build
 %if 0%{?el6}
          -DCMAKE_SKIP_RPATH=OFF \
 %endif
+         -DOCIO_BUILD_DOCS=ON \
          -DOCIO_BUILD_TESTS=ON \
          -DOCIO_LINK_PYGLUE=ON \
          -DOCIO_PYGLUE_SONAME=OFF \
