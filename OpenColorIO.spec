@@ -90,21 +90,21 @@ rm -f ext/yaml*
 
 %build
 rm -rf build && mkdir build && pushd build
-%cmake -DOCIO_BUILD_STATIC=OFF \
-       -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
+%cmake28 -DOCIO_BUILD_STATIC=OFF \
+         -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
 %if 0%{?el6}
-       -DCMAKE_SKIP_RPATH=OFF \
+         -DCMAKE_SKIP_RPATH=OFF \
 %endif
-       -DOCIO_BUILD_TESTS=ON \
-       -DOCIO_LINK_PYGLUE=ON \
-       -DOCIO_PYGLUE_SONAME=OFF \
-       -DUSE_EXTERNAL_YAML=TRUE \
-       -DUSE_EXTERNAL_TINYXML=TRUE \
-       -DUSE_EXTERNAL_LCMS=TRUE \
+         -DOCIO_BUILD_TESTS=ON \
+         -DOCIO_LINK_PYGLUE=ON \
+         -DOCIO_PYGLUE_SONAME=OFF \
+         -DUSE_EXTERNAL_YAML=TRUE \
+         -DUSE_EXTERNAL_TINYXML=TRUE \
+         -DUSE_EXTERNAL_LCMS=TRUE \
 %ifnarch x86_64
-       -DOCIO_USE_SSE=OFF \
+         -DOCIO_USE_SSE=OFF \
 %endif
-       ../
+         ../
 
 make %{?_smp_mflags}
 
