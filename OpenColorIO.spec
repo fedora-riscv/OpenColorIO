@@ -14,7 +14,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.7
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -155,6 +155,9 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 
 
 %changelog
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.7-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Apr 26 2012 Richard Shaw <hobbes1069@gmail.com> - 1.0.7-4
 - Only use SSE instructions on x86_64.
 
