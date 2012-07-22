@@ -27,7 +27,11 @@ Patch0:         OpenColorIO-1.0.7-pylib_no_soname.patch
 Patch1:         OpenColorIO-1.0.7-docfix.patch
 
 # Utilities
+%if 0%{?el6}
 BuildRequires:  cmake28
+%else
+BuildRequires:  cmake
+%endif
 BuildRequires:  help2man
 
 # Libraries
