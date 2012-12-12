@@ -1,6 +1,3 @@
-%global githash1 g87da508
-%global githash2 b3cb224
-
 # Filter provides from Python libraries
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}.*\.so$
@@ -13,18 +10,15 @@
 %endif
 
 Name:           OpenColorIO
-Version:        1.0.7
-Release:        5%{?dist}
+Version:        1.0.8
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
 # Github archive was generated on the fly using the following URL:
-# https://github.com/imageworks/OpenColorIO/tarball/v1.0.7
-Source0:        imageworks-%{name}-v%{version}-0-%{githash1}.tar.gz
-
-Patch0:         OpenColorIO-1.0.7-pylib_no_soname.patch
-Patch1:         OpenColorIO-1.0.7-docfix.patch
+# https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
+Source0:        %{name}-%{version}.tar.gz
 
 # Utilities
 %if 0%{?el6}
@@ -49,7 +43,7 @@ BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
 BuildRequires:  yaml-cpp-devel >= 0.3.0
 
-# The following are only used for document generation.
+# The following bundled projects  are only used for document generation.
 #BuildRequires:  python-docutils
 #BuildRequires:  python-jinja2
 #BuildRequires:  python-pygments
@@ -84,12 +78,7 @@ Development libraries and headers for %{name}.
 
 
 %prep
-%setup -q -n imageworks-%{name}-%{githash2}
-# Dot set soname for python modules.
-%patch0 -p1 -b .pylib
-# Exclude hidden files from being packaged.
-%patch1 -p1 -b .docfix
-
+%setup -q
 
 # Remove what bundled libraries
 rm -f ext/lcms*
@@ -99,19 +88,19 @@ rm -f ext/yaml*
 
 %build
 rm -rf build && mkdir build && pushd build
-%cmake   -DOCIO_BUILD_STATIC=OFF \
-         -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
-         -DOCIO_BUILD_DOCS=ON \
-         -DOCIO_BUILD_TESTS=ON \
-         -DOCIO_LINK_PYGLUE=ON \
-         -DOCIO_PYGLUE_SONAME=OFF \
-         -DUSE_EXTERNAL_YAML=TRUE \
-         -DUSE_EXTERNAL_TINYXML=TRUE \
-         -DUSE_EXTERNAL_LCMS=TRUE \
+%cmake -DOCIO_BUILD_STATIC=OFF \
+       -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
+       -DOCIO_BUILD_DOCS=ON \
+       -DOCIO_BUILD_TESTS=ON \
+       -DOCIO_LINK_PYGLUE=ON \
+       -DOCIO_PYGLUE_SONAME=OFF \
+       -DUSE_EXTERNAL_YAML=TRUE \
+       -DUSE_EXTERNAL_TINYXML=TRUE \
+       -DUSE_EXTERNAL_LCMS=TRUE \
 %ifnarch x86_64
-         -DOCIO_USE_SSE=OFF \
+       -DOCIO_USE_SSE=OFF \
 %endif
-         ../
+       ../
 
 make %{?_smp_mflags}
 
@@ -159,6 +148,9 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 
 
 %changelog
+* Tue Dec 11 2012 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-1
+- Update to latest upstream release.
+
 * Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.7-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
