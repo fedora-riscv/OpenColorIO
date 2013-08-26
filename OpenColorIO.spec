@@ -11,7 +11,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.8
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -19,6 +19,7 @@ URL:            http://opencolorio.org/
 # Github archive was generated on the fly using the following URL:
 # https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
 Source0:        %{name}-%{version}.tar.gz
+Patch0:         OpenColorIO-pull_300.patch
 
 # Utilities
 %if 0%{?el6}
@@ -79,6 +80,7 @@ Development libraries and headers for %{name}.
 
 %prep
 %setup -q
+%patch0 -p1 -b .pull300
 
 # Remove what bundled libraries
 rm -f ext/lcms*
@@ -89,10 +91,8 @@ rm -f ext/yaml*
 %build
 rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
-       -DPYTHON_INCLUDE_LIB_PREFIX=OFF \
        -DOCIO_BUILD_DOCS=ON \
        -DOCIO_BUILD_TESTS=ON \
-       -DOCIO_LINK_PYGLUE=ON \
        -DOCIO_PYGLUE_SONAME=OFF \
        -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
@@ -138,7 +138,7 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 %{python_sitearch}/*.so
 
 %files doc
-%doc %{_docdir}/%{name}/
+%{_docdir}/%{name}/
 
 %files devel
 %{_includedir}/OpenColorIO/
@@ -148,6 +148,9 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 
 
 %changelog
+* Mon Aug 26 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-4
+- Fix for new F20 feature, unversion doc dir. Fixes BZ#1001264
+
 * Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.8-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
