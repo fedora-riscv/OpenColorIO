@@ -11,7 +11,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.8
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -118,6 +118,11 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
          -o %{buildroot}%{_mandir}/man1/ociobakelut.1 \
          src/apps/ociobakelut/ociobakelut
 
+# Move installed documentation back so it doesn't conflict with the main package
+popd
+mkdir _tmpdoc
+mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
+
 
 %check
 # Testing passes locally in mock but fails on the fedora build servers.
@@ -138,7 +143,7 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 %{python_sitearch}/*.so
 
 %files doc
-%{_docdir}/%{name}/
+%doc _tmpdoc/*
 
 %files devel
 %{_includedir}/OpenColorIO/
@@ -148,7 +153,7 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 
 
 %changelog
-* Mon Aug 26 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-4
+* Mon Aug 26 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-5
 - Fix for new F20 feature, unversion doc dir. Fixes BZ#1001264
 
 * Fri Aug 02 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.8-3
