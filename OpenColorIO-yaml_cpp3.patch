@@ -6,7 +6,7 @@ diff -Naur OpenColorIO-1.0.8.orig/CMakeLists.txt OpenColorIO-1.0.8/CMakeLists.tx
      include(FindPkgConfig) 
      if(PKG_CONFIG_EXECUTABLE)
 -        pkg_check_modules(YAML_CPP yaml-cpp)
-+        pkg_search_module(YAML_CPP yaml-cpp yaml-cpp3)
++        pkg_search_module(YAML_CPP yaml-cpp yaml-cpp03)
      else(PKG_CONFIG_EXECUTABLE)
          find_package(YAML_CPP)
      endif(PKG_CONFIG_EXECUTABLE)
@@ -25,7 +25,7 @@ diff -Naur OpenColorIO-1.0.8.orig/src/core/OCIOYaml.h OpenColorIO-1.0.8/src/core
  #endif 
  
 -#include <yaml-cpp/yaml.h>
-+#include <yaml-cpp3/yaml.h>
++#include <yaml-cpp03/yaml.h>
  
  #ifndef INCLUDED_OCIO_YAML_H
  #define INCLUDED_OCIO_YAML_H
