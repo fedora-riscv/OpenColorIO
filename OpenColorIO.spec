@@ -43,7 +43,7 @@ BuildRequires:  zlib-devel
 #######################
 BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
-BuildRequires:  yaml-cpp-devel >= 0.3.0
+BuildRequires:  yaml-cpp03-devel >= 0.3.0
 
 # The following bundled projects  are only used for document generation.
 #BuildRequires:  python-docutils
