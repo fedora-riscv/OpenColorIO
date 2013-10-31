@@ -11,7 +11,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.8
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -20,6 +20,7 @@ URL:            http://opencolorio.org/
 # https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
 Source0:        %{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-pull_300.patch
+Patch1:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
 %if 0%{?el6}
@@ -81,6 +82,7 @@ Development libraries and headers for %{name}.
 %prep
 %setup -q
 %patch0 -p1 -b .pull300
+%patch1 -p1 -b .yaml3
 
 # Remove what bundled libraries
 rm -f ext/lcms*
@@ -107,7 +109,7 @@ make %{?_smp_mflags}
 
 %install
 pushd build
-make install DESTDIR=%{buildroot}
+%make_install
 
 # Generate man pages
 mkdir -p %{buildroot}%{_mandir}/man1
@@ -153,6 +155,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Mon Sep 23 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-6
+- Rebuild against yaml-cpp03 compatibility package.
+
 * Mon Aug 26 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-5
 - Fix for new F20 feature, unversion doc dir. Fixes BZ#1001264
 

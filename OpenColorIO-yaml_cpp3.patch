@@ -1,0 +1,31 @@
+diff -Naur OpenColorIO-1.0.8.orig/CMakeLists.txt OpenColorIO-1.0.8/CMakeLists.txt
+--- OpenColorIO-1.0.8.orig/CMakeLists.txt	2013-10-16 14:19:36.186578444 -0500
++++ OpenColorIO-1.0.8/CMakeLists.txt	2013-10-16 14:20:03.469002840 -0500
+@@ -193,7 +193,7 @@
+     set(YAML_VERSION_MIN "0.3.0")
+     include(FindPkgConfig) 
+     if(PKG_CONFIG_EXECUTABLE)
+-        pkg_check_modules(YAML_CPP yaml-cpp)
++        pkg_search_module(YAML_CPP yaml-cpp yaml-cpp3)
+     else(PKG_CONFIG_EXECUTABLE)
+         find_package(YAML_CPP)
+     endif(PKG_CONFIG_EXECUTABLE)
+@@ -416,4 +416,4 @@
+                   COMMENT "Running ctest with verbose output")
+ 
+ # Log CMake first run done
+-SET(CMAKE_FIRST_RUN 0 CACHE INTERNAL "")
+\ No newline at end of file
++SET(CMAKE_FIRST_RUN 0 CACHE INTERNAL "")
+diff -Naur OpenColorIO-1.0.8.orig/src/core/OCIOYaml.h OpenColorIO-1.0.8/src/core/OCIOYaml.h
+--- OpenColorIO-1.0.8.orig/src/core/OCIOYaml.h	2012-12-11 17:21:23.000000000 -0600
++++ OpenColorIO-1.0.8/src/core/OCIOYaml.h	2013-10-16 14:21:51.888715333 -0500
+@@ -68,7 +68,7 @@
+ 
+ #endif 
+ 
+-#include <yaml-cpp/yaml.h>
++#include <yaml-cpp3/yaml.h>
+ 
+ #ifndef INCLUDED_OCIO_YAML_H
+ #define INCLUDED_OCIO_YAML_H
