@@ -28,6 +28,7 @@ BuildRequires:  cmake28
 BuildRequires:  cmake
 %endif
 BuildRequires:  help2man
+BuildRequires:  python-markupsafe
 
 # Libraries
 BuildRequires:  python-devel
