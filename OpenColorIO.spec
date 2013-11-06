@@ -19,7 +19,6 @@ URL:            http://opencolorio.org/
 # Github archive was generated on the fly using the following URL:
 # https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
 Source0:        %{name}-%{version}.tar.gz
-Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
 %if 0%{?el6}
@@ -81,7 +80,6 @@ Development libraries and headers for %{name}.
 
 %prep
 %setup -q
-%patch0 -p1 -b .yaml3
 
 # Remove what bundled libraries
 rm -f ext/lcms*
