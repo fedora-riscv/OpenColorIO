@@ -10,8 +10,8 @@
 %endif
 
 Name:           OpenColorIO
-Version:        1.0.8
-Release:        6%{?dist}
+Version:        1.0.9
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -19,8 +19,7 @@ URL:            http://opencolorio.org/
 # Github archive was generated on the fly using the following URL:
 # https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
 Source0:        %{name}-%{version}.tar.gz
-Patch0:         OpenColorIO-pull_300.patch
-Patch1:         OpenColorIO-yaml_cpp3.patch
+Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
 %if 0%{?el6}
@@ -81,8 +80,7 @@ Development libraries and headers for %{name}.
 
 %prep
 %setup -q
-%patch0 -p1 -b .pull300
-%patch1 -p1 -b .yaml3
+%patch0 -p1 -b .yaml3
 
 # Remove what bundled libraries
 rm -f ext/lcms*
@@ -155,6 +153,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Wed Nov  6 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-1
+- Update to latest upstream release.
+
 * Mon Sep 23 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.8-6
 - Rebuild against yaml-cpp03 compatibility package.
 
