@@ -23,6 +23,7 @@ Source0:        %{name}-%{version}.tar.gz
 # Utilities
 %if 0%{?el6}
 BuildRequires:  cmake28
+BuildRequires:  python-markupsafe
 %else
 BuildRequires:  cmake
 %endif
