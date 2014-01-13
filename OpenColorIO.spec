@@ -17,9 +17,8 @@ Summary:        Enables color transforms and image display across graphics apps
 License:        BSD
 URL:            http://opencolorio.org/
 # Github archive was generated on the fly using the following URL:
-# https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
+# https://github.com/imageworks/OpenColorIO/tarball/v1.0.9
 Source0:        %{name}-%{version}.tar.gz
-Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
 %if 0%{?el6}
@@ -43,7 +42,7 @@ BuildRequires:  zlib-devel
 #######################
 BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
-BuildRequires:  yaml-cpp03-devel >= 0.3.0
+BuildRequires:  yaml-cpp-devel >= 0.3.0
 
 # The following bundled projects  are only used for document generation.
 #BuildRequires:  python-docutils
