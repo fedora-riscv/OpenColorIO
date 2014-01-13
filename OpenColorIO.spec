@@ -11,13 +11,13 @@
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
 # Github archive was generated on the fly using the following URL:
-# https://github.com/imageworks/OpenColorIO/tarball/v1.0.8
+# https://github.com/imageworks/OpenColorIO/tarball/v1.0.9
 Source0:        %{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-yaml_cpp3.patch
 
@@ -29,6 +29,11 @@ BuildRequires:  cmake
 %endif
 BuildRequires:  help2man
 BuildRequires:  python-markupsafe
+
+# WARNING: OpenColorIO and OpenImageIO are cross dependent.
+# If an ABI incompatible update is done in one, the other also needs to be
+# rebuilt.
+BuildRequires:  OpenImageIO-devel
 
 # Libraries
 BuildRequires:  python-devel
@@ -45,7 +50,7 @@ BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
 BuildRequires:  yaml-cpp03-devel >= 0.3.0
 
-# The following bundled projects  are only used for document generation.
+# The following bundled projects are only used for document generation.
 #BuildRequires:  python-docutils
 #BuildRequires:  python-jinja2
 #BuildRequires:  python-pygments
@@ -58,6 +63,14 @@ OCIO enables color transforms and image display to be handled in a consistent
 manner across multiple graphics applications. Unlike other color management
 solutions, OCIO is geared towards motion-picture post production, with an
 emphasis on visual effects and animation color pipelines.
+
+
+%package tools
+Summary:        Command line tools for %{name}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description tools
+Command line tools for %{name}.
 
 
 %package doc
@@ -136,12 +149,14 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 %files
 %doc ChangeLog LICENSE README
-%{_bindir}/*
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
-%{_mandir}/man1/*
 %{python_sitearch}/*.so
+
+%files tools
+%{_bindir}/*
+%{_mandir}/man1/*
 
 %files doc
 %doc _tmpdoc/*
@@ -154,6 +169,10 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Mon Jan 13 2014 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-2
+- Add OpenImageIO as build requirement to build additional command line tools.
+  Fixes BZ#1038860.
+
 * Wed Nov  6 2013 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-1
 - Update to latest upstream release.
 
