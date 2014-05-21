@@ -5,7 +5,7 @@
 }
 
 # Use cmake28 package on EL builds.
-%if 0%{?el6}
+%if 0%{?rhel} && 0%{?rhel} <= 6
 %global cmake %cmake28 -DCMAKE_SKIP_RPATH=OFF
 %endif
 
@@ -22,7 +22,7 @@ Source0:        %{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
-%if 0%{?el6}
+%if 0%{?rhel} && 0%{?rhel} <= 6
 BuildRequires:  cmake28
 %else
 BuildRequires:  cmake
