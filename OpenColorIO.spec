@@ -11,7 +11,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -169,6 +169,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Wed May 21 2014 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-3
+- Rebuild for updated OpenImageIO 1.4.7.
+
 * Mon Jan 13 2014 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-2
 - Add OpenImageIO as build requirement to build additional command line tools.
   Fixes BZ#1038860.
