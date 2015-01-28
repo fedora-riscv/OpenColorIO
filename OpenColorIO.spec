@@ -4,14 +4,9 @@
 %filter_setup
 }
 
-# Use cmake28 package on EL builds.
-%if 0%{?rhel} && 0%{?rhel} <= 6
-%global cmake %cmake28 -DCMAKE_SKIP_RPATH=OFF
-%endif
-
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -22,11 +17,7 @@ Source0:        %{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
-%if 0%{?rhel} && 0%{?rhel} <= 6
-BuildRequires:  cmake28
-%else
 BuildRequires:  cmake
-%endif
 BuildRequires:  help2man
 BuildRequires:  python-markupsafe
 
@@ -169,6 +160,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Wed Jan 28 2015 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-6
+- Rebuild for OpenImageIO 1.5.11.
+
 * Fri Aug 15 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.9-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
