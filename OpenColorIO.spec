@@ -6,7 +6,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -160,6 +160,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 1.0.9-7
+- Rebuilt for GCC 5 C++11 ABI change
+
 * Wed Jan 28 2015 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-6
 - Rebuild for OpenImageIO 1.5.11.
 
