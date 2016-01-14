@@ -160,6 +160,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Thu Jan 14 2016 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-10
+- Rebuild for OpenImageIO 1.6.9.
+
 * Thu Jan 14 2016 Adam Jackson <ajax@redhat.com> - 1.0.9-9
 - Rebuild for glew 1.13
 
