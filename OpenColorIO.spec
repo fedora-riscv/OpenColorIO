@@ -6,7 +6,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -160,6 +160,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Mon Oct 03 2016 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-13
+- Rebuild for new OpenImageIO.
+
 * Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.9-12
 - https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
