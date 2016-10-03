@@ -25,6 +25,7 @@ BuildRequires:  python-markupsafe
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
 BuildRequires:  OpenImageIO-devel
+BuildRequires:  OpenEXR-devel
 
 # Libraries
 BuildRequires:  python-devel
