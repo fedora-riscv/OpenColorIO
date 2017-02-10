@@ -6,7 +6,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -161,6 +161,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.9-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Tue Jan 10 2017 Orion Poplawski <orion@cora.nwra.com> - 1.0.9-14
 - Rebuild for glew 2.0.0
 
