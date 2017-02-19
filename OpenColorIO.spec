@@ -11,9 +11,7 @@ Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
-# Github archive was generated on the fly using the following URL:
-# https://github.com/imageworks/OpenColorIO/tarball/v1.0.9
-Source0:        %{name}-%{version}.tar.gz
+Source0:        https://github.com/imageworks/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
@@ -140,7 +138,8 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %files
-%doc ChangeLog LICENSE README
+%license LICENSE
+%doc ChangeLog README
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
