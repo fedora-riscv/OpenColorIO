@@ -1,12 +1,12 @@
 # Filter provides from Python libraries
 %{?filter_setup:
-%filter_provides_in %{python_sitearch}.*\.so$
+%filter_provides_in %{python2_sitearch}.*\.so$
 %filter_setup
 }
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        18%{?dist}
+Release:        19%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -17,7 +17,7 @@ Patch0:         OpenColorIO-yaml_cpp3.patch
 # Utilities
 BuildRequires:  cmake
 BuildRequires:  help2man
-BuildRequires:  python-markupsafe
+BuildRequires:  python2-markupsafe
 
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
@@ -26,7 +26,7 @@ BuildRequires:  OpenImageIO-devel
 BuildRequires:  OpenEXR-devel
 
 # Libraries
-BuildRequires:  python-devel
+BuildRequires:  python2-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  freeglut-devel
@@ -143,7 +143,7 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
-%{python_sitearch}/*.so
+%{python2_sitearch}/*.so
 
 %files tools
 %{_bindir}/*
@@ -160,6 +160,10 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Wed Dec 06 2017 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-19
+- Fix ambiguous Python 2 dependency declarations
+  https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.9-18
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
