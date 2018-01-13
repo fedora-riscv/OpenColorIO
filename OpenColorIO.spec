@@ -5,19 +5,39 @@
 }
 
 Name:           OpenColorIO
-Version:        1.0.9
-Release:        20%{?dist}
+Version:        1.1.0
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
 Source0:        https://github.com/imageworks/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:         OpenColorIO-yaml_cpp3.patch
+Patch0:         OpenColorIO-gcc.patch
+Patch1:         OpenColorIO-setuptools.patch
 
 # Utilities
 BuildRequires:  cmake
 BuildRequires:  help2man
 BuildRequires:  python2-markupsafe
+BuildRequires:  python2-setuptools
+
+# Needed for pdf documentation generation
+BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
+# Fonts
+BuildRequires:  texlive-cm texlive-ec texlive-times texlive-helvetic
+BuildRequires:  texlive-courier
+# Map tables
+BuildRequires:  texlive-cmap
+# Font maps
+BuildRequires:  texlive-updmap-map
+# Babel
+BuildRequires:  texlive-babel-english
+# Styles
+BuildRequires:  texlive-fancyhdr texlive-fancybox texlive-mdwtools
+BuildRequires:  texlive-parskip texlive-multirow texlive-titlesec
+BuildRequires:  texlive-framed texlive-threeparttable texlive-wrapfig
+# Other
+BuildRequires:  texlive-hyphen-base
 
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
@@ -38,7 +58,7 @@ BuildRequires:  zlib-devel
 #######################
 BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
-BuildRequires:  yaml-cpp03-devel >= 0.3.0
+BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 # The following bundled projects are only used for document generation.
 #BuildRequires:  python-docutils
@@ -83,8 +103,7 @@ Development libraries and headers for %{name}.
 
 
 %prep
-%setup -q
-%patch0 -p1 -b .yaml3
+%autosetup -p1
 
 # Remove what bundled libraries
 rm -f ext/lcms*
@@ -101,12 +120,13 @@ rm -rf build && mkdir build && pushd build
        -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
        -DUSE_EXTERNAL_LCMS=TRUE \
+       -DUSE_EXTERNAL_SETUPTOOLS=TRUE \
 %ifnarch x86_64
        -DOCIO_USE_SSE=OFF \
 %endif
        ../
 
-make %{?_smp_mflags}
+%make_build
 
 
 %install
@@ -127,6 +147,10 @@ popd
 mkdir _tmpdoc
 mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
+# Fix location of cmake files.
+mkdir -p %{buildroot}%{_datadir}/cmake/Modules
+find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modules/ \;
+
 
 %check
 # Testing passes locally in mock but fails on the fedora build servers.
@@ -139,7 +163,7 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 %files
 %license LICENSE
-%doc ChangeLog README
+%doc ChangeLog README.md
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
@@ -153,6 +177,7 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 %doc _tmpdoc/*
 
 %files devel
+%{_datadir}/cmake/Modules/*
 %{_includedir}/OpenColorIO/
 %{_includedir}/PyOpenColorIO/
 %{_libdir}/*.so
@@ -160,6 +185,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Fri Jan 12 2018 Richard Shaw <hobbes1069@gmail.com> - 1.1.0-1
+- Update to latest upstream release.
+
 * Sun Jan 07 2018 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-20
 - Rebuild for OpenImageIO 1.8.7.
 
