@@ -120,7 +120,7 @@ rm -rf build && mkdir build && pushd build
        -DOCIO_BUILD_DOCS=ON \
        -DOCIO_BUILD_TESTS=ON \
        -DOCIO_PYGLUE_SONAME=OFF \
-       -DUSE_EXTERNAL_YAML=TRUE \
+       -DUSE_EXTERNAL_YAML=FALSE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
        -DUSE_EXTERNAL_LCMS=TRUE \
        -DUSE_EXTERNAL_SETUPTOOLS=TRUE \
