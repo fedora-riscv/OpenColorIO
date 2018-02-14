@@ -42,7 +42,7 @@ BuildRequires:  texlive-hyphen-base
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-#BuildRequires:  OpenImageIO-devel
+BuildRequires:  OpenImageIO-devel
 BuildRequires:  OpenEXR-devel
 
 # Libraries
@@ -58,7 +58,7 @@ BuildRequires:  zlib-devel
 #######################
 BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
-BuildRequires:  yaml-cpp-devel >= 0.5.0
+#BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 # The following bundled projects are only used for document generation.
 #BuildRequires:  python-docutils
@@ -66,6 +66,9 @@ BuildRequires:  yaml-cpp-devel >= 0.5.0
 #BuildRequires:  python-pygments
 #BuildRequires:  python-setuptools
 #BuildRequires:  python-sphinx
+
+# Workaround for https://github.com/imageworks/OpenColorIO/issues/517
+Provides:       bundled(yaml-cpp) = 0.3.0
 
 
 %description
@@ -108,7 +111,7 @@ Development libraries and headers for %{name}.
 # Remove what bundled libraries
 rm -f ext/lcms*
 rm -f ext/tinyxml*
-rm -f ext/yaml*
+#rm -f ext/yaml*
 
 
 %build
