@@ -42,7 +42,7 @@ BuildRequires:  texlive-hyphen-base
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-BuildRequires:  OpenImageIO-devel
+#BuildRequires:  OpenImageIO-devel
 BuildRequires:  OpenEXR-devel
 
 # Libraries
