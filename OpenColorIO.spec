@@ -14,6 +14,14 @@ URL:            http://opencolorio.org/
 Source0:        https://github.com/imageworks/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-gcc.patch
 Patch1:         OpenColorIO-setuptools.patch
+# Fix build against yaml-cpp 0.6.0+
+# This patch is fine for our case (building against system yaml-cpp)
+# but probably a bit too simple-minded to upstream as-is. See
+# https://github.com/imageworks/OpenColorIO/issues/517
+Patch2:         ocio-1.1.0-yamlcpp060.patch
+# Fix build of Python bindings with GCC 8
+# https://github.com/imageworks/OpenColorIO/pull/518
+Patch3:         ocio-1.1.0-gcc8.patch
 
 # Utilities
 BuildRequires:  cmake
@@ -58,7 +66,7 @@ BuildRequires:  zlib-devel
 #######################
 BuildRequires:  tinyxml-devel
 BuildRequires:  lcms2-devel
-#BuildRequires:  yaml-cpp-devel >= 0.5.0
+BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 # The following bundled projects are only used for document generation.
 #BuildRequires:  python-docutils
@@ -66,9 +74,6 @@ BuildRequires:  lcms2-devel
 #BuildRequires:  python-pygments
 #BuildRequires:  python-setuptools
 #BuildRequires:  python-sphinx
-
-# Workaround for https://github.com/imageworks/OpenColorIO/issues/517
-Provides:       bundled(yaml-cpp) = 0.3.0
 
 
 %description
@@ -111,7 +116,7 @@ Development libraries and headers for %{name}.
 # Remove what bundled libraries
 rm -f ext/lcms*
 rm -f ext/tinyxml*
-#rm -f ext/yaml*
+rm -f ext/yaml*
 
 
 %build
@@ -120,7 +125,7 @@ rm -rf build && mkdir build && pushd build
        -DOCIO_BUILD_DOCS=ON \
        -DOCIO_BUILD_TESTS=ON \
        -DOCIO_PYGLUE_SONAME=OFF \
-       -DUSE_EXTERNAL_YAML=FALSE \
+       -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
        -DUSE_EXTERNAL_LCMS=TRUE \
        -DUSE_EXTERNAL_SETUPTOOLS=TRUE \
@@ -188,8 +193,10 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
-* Wed Feb 14 2018 Richard Shaw <hobbes1069@gmail.com> - 1.1.0-3
-- Rebuild for yaml-cpp 0.6.0.
+* Mon Feb 19 2018 Adam Williamson <awilliam@redhat.com> - 1.1.0-3
+- Fix build with yaml-cpp 0.6+ (patch out bogus hidden visibility)
+- Fix build with GCC 8 (issues in Python bindings, upstream PR #518)
+- Rebuild for yaml-cpp 0.6.1
 
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
