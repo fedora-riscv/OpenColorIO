@@ -1,51 +1,85 @@
-From 5d1aa094a9312fbe53a8006e315740b2e2083878 Mon Sep 17 00:00:00 2001
+From 4d62d77095feb1612d27fbcd757394b408902538 Mon Sep 17 00:00:00 2001
 From: Adam Williamson <awilliam@redhat.com>
 Date: Mon, 19 Feb 2018 20:40:16 -0800
 Subject: [PATCH] Fix build of Python bindings with GCC 8
 
+GCC 8 appears to be rather stricter about various issues to do
+with type conversions and casts than GCC 7 was. This affects
+OpenColorIO's Python bindings quite heavily, producing a large
+number of warnings (which are converted to errors by `-Werror`)
+and outright errors.
+
+The changes here are almost all one of three basic types:
+
+1. Many functions that become Python methods with no arguments
+(using the METH_NOARGS flag) did not include the expected second
+parameter in their signatures at all. METH_NOARGS does not
+prevent this second parameter being passed *at all*, it only
+ensures that it will always be NULL. It's still not technically
+correct to leave it out of the function signature; as a comment
+from 'yak' on  https://stackoverflow.com/questions/10256315
+points out, there are situations where this could cause a crash.
+I've added the second parameter (with no name, per convention)
+to every one of these cases.
+
+2. In several cases, classes specified a custom destructor, with
+a cast to the `destructor` type, which only takes a single
+parameter. However, the signatures for these destructor functions
+included two parameters, assuming that they'd get an 'args'
+parameter (they do not). I've corrected all these cases.
+
+3. In several cases, classes specified custom str or repr
+methods. However, in the `PyTypeObject` structures for these
+classes, these methods were not cast to the `reprfunc` type, as
+they ought to be. I've added these casts.
+
+There are two warnings I just can't get rid of with my limited
+C++ knowledge. The `Config` class (in PyConfig.cpp) defines a
+couple of methods that take kwargs as well as args. This is
+done by setting the `METH_KEYWORDS` flag, which ultimately seems
+to result in a cast from type `PyCFunctionWithKeywords` to
+`PyCFunction` happening somewhere behind the scenes. There's some
+discussion of this at https://stackoverflow.com/questions/9496753
+
+GCC 8 does not like this cast - it causes a 'cast-function-type'
+warning. I've messed around a bit with `reinterpret_cast` and
+stuff, but didn't really understand precisely what I was doing
+and didn't manage to find anything that got rid of the warnings.
+So I just added `-Wno-error=cast-function-type` to the compiler
+flags instead, which turns these back into warnings and allows
+the compilation to succeed.
+
+I've tested at least that the compilation succeeds with only
+those two warnings, and I can import the Python module and
+instantiate a few classes and examine their docstrings and stuff
+with no apparent errors or crashes.
+
+Many thanks to Kevin Kofler for his help with these fixes.
+
 Signed-off-by: Adam Williamson <awilliam@redhat.com>
 ---
- src/pyglue/CMakeLists.txt            |   6 +-
- src/pyglue/PyAllocationTransform.cpp |  14 ++---
- src/pyglue/PyBaker.cpp               |  56 ++++++++---------
- src/pyglue/PyCDLTransform.cpp        |  36 +++++------
- src/pyglue/PyColorSpace.cpp          |  46 +++++++-------
+ src/pyglue/PyAllocationTransform.cpp |  14 ++--
+ src/pyglue/PyBaker.cpp               |  56 ++++++++--------
+ src/pyglue/PyCDLTransform.cpp        |  36 +++++-----
+ src/pyglue/PyColorSpace.cpp          |  46 ++++++-------
  src/pyglue/PyColorSpaceTransform.cpp |   8 +--
- src/pyglue/PyConfig.cpp              | 114 +++++++++++++++++------------------
- src/pyglue/PyContext.cpp             |  38 ++++++------
- src/pyglue/PyDisplayTransform.cpp    |  36 +++++------
+ src/pyglue/PyConfig.cpp              | 123 +++++++++++++++++++----------------
+ src/pyglue/PyContext.cpp             |  38 +++++------
+ src/pyglue/PyDisplayTransform.cpp    |  36 +++++-----
  src/pyglue/PyExponentTransform.cpp   |   4 +-
  src/pyglue/PyFileTransform.cpp       |  16 ++---
  src/pyglue/PyGpuShaderDesc.cpp       |  20 +++---
  src/pyglue/PyGroupTransform.cpp      |  16 ++---
  src/pyglue/PyLogTransform.cpp        |   4 +-
- src/pyglue/PyLook.cpp                |  34 +++++------
+ src/pyglue/PyLook.cpp                |  34 +++++-----
  src/pyglue/PyLookTransform.cpp       |  12 ++--
  src/pyglue/PyMain.cpp                |   6 +-
  src/pyglue/PyMatrixTransform.cpp     |  16 ++---
  src/pyglue/PyProcessor.cpp           |  20 +++---
  src/pyglue/PyProcessorMetadata.cpp   |  12 ++--
- src/pyglue/PyTransform.cpp           |  18 +++---
- 21 files changed, 267 insertions(+), 265 deletions(-)
+ src/pyglue/PyTransform.cpp           |  18 ++---
+ 20 files changed, 272 insertions(+), 263 deletions(-)
 
-diff --git a/src/pyglue/CMakeLists.txt b/src/pyglue/CMakeLists.txt
-index a90ca1c..bc96fd5 100644
---- a/src/pyglue/CMakeLists.txt
-+++ b/src/pyglue/CMakeLists.txt
-@@ -21,9 +21,11 @@ if(WIN32)
- endif()
- 
- # Process all warnings as errors
--# Unfortunately Windows still has a warning
-+# Unfortunately Windows still has a warning, and there is an incompatible
-+# function type cast warning for methods with kwargs when building with
-+# GCC 8 (affects PyConfig.cpp)
- if(UNIX)
--    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wno-error=cast-function-type")
- endif()
- 
- find_package(PythonLibs)
 diff --git a/src/pyglue/PyAllocationTransform.cpp b/src/pyglue/PyAllocationTransform.cpp
 index 06b418a..d77737a 100644
 --- a/src/pyglue/PyAllocationTransform.cpp
@@ -568,7 +602,7 @@ index aa10e25..3ca2b56 100644
              OCIO_PYTRY_ENTER()
              ConstColorSpaceTransformRcPtr transform = GetConstColorSpaceTransform(self);
 diff --git a/src/pyglue/PyConfig.cpp b/src/pyglue/PyConfig.cpp
-index 42ea872..24152fd 100644
+index 42ea872..d2f5107 100644
 --- a/src/pyglue/PyConfig.cpp
 +++ b/src/pyglue/PyConfig.cpp
 @@ -76,48 +76,48 @@ OCIO_NAMESPACE_ENTER
@@ -641,7 +675,7 @@ index 42ea872..24152fd 100644
          PyObject * PyOCIO_Config_getDefaultView(PyObject * self, PyObject * args);
          PyObject * PyOCIO_Config_getNumViews(PyObject * self, PyObject * args);
          PyObject * PyOCIO_Config_getView(PyObject * self, PyObject * args);
-@@ -125,19 +125,19 @@ OCIO_NAMESPACE_ENTER
+@@ -125,24 +125,31 @@ OCIO_NAMESPACE_ENTER
          PyObject * PyOCIO_Config_getDisplayColorSpaceName(PyObject * self, PyObject * args);
          PyObject * PyOCIO_Config_getDisplayLooks(PyObject * self, PyObject * args);
          PyObject * PyOCIO_Config_addDisplay(PyObject * self, PyObject * args, PyObject * kwargs);
@@ -668,7 +702,28 @@ index 42ea872..24152fd 100644
          PyObject * PyOCIO_Config_getProcessor(PyObject * self, PyObject * args, PyObject * kwargs);
          
          ///////////////////////////////////////////////////////////////////////
-@@ -284,7 +284,7 @@ OCIO_NAMESPACE_ENTER
+         ///
+         
++        // disable cast-function-type warning on GCC 8+
++        // this is triggered by methods that take kwargs (METH_KEYWORDS)
++        #pragma GCC diagnostic push
++        #if __GNUC__ >= 8
++        #pragma GCC diagnostic ignored "-Wcast-function-type"
++        #endif
++        
+         PyMethodDef PyOCIO_Config_methods[] = {
+             { "CreateFromEnv",
+             (PyCFunction) PyOCIO_Config_CreateFromEnv, METH_NOARGS | METH_CLASS, CONFIG_CREATEFROMENV__DOC__ },
+@@ -269,6 +276,8 @@ OCIO_NAMESPACE_ENTER
+             { NULL, NULL, 0, NULL }
+         };
+         
++        #pragma GCC diagnostic pop
++        
+     }
+     
+     ///////////////////////////////////////////////////////////////////////////
+@@ -284,7 +293,7 @@ OCIO_NAMESPACE_ENTER
          0,                                          //tp_getattr
          0,                                          //tp_setattr
          0,                                          //tp_compare
@@ -677,7 +732,7 @@ index 42ea872..24152fd 100644
          0,                                          //tp_as_number
          0,                                          //tp_as_sequence
          0,                                          //tp_as_mapping
-@@ -323,7 +323,7 @@ OCIO_NAMESPACE_ENTER
+@@ -323,7 +332,7 @@ OCIO_NAMESPACE_ENTER
          ///////////////////////////////////////////////////////////////////////
          ///
          
@@ -686,7 +741,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              return BuildConstPyConfig(Config::CreateFromEnv());
-@@ -357,7 +357,7 @@ OCIO_NAMESPACE_ENTER
+@@ -357,7 +366,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(-1)
          }
          
@@ -695,7 +750,7 @@ index 42ea872..24152fd 100644
          {
              DeletePyObject<PyOCIO_Config>(self);
          }
-@@ -372,12 +372,12 @@ OCIO_NAMESPACE_ENTER
+@@ -372,12 +381,12 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
  
@@ -710,7 +765,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -386,7 +386,7 @@ OCIO_NAMESPACE_ENTER
+@@ -386,7 +395,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -719,7 +774,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -395,7 +395,7 @@ OCIO_NAMESPACE_ENTER
+@@ -395,7 +404,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -728,7 +783,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -415,7 +415,7 @@ OCIO_NAMESPACE_ENTER
+@@ -415,7 +424,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -737,7 +792,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -439,7 +439,7 @@ OCIO_NAMESPACE_ENTER
+@@ -439,7 +448,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -746,7 +801,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -460,7 +460,7 @@ OCIO_NAMESPACE_ENTER
+@@ -460,7 +469,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -755,7 +810,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -491,7 +491,7 @@ OCIO_NAMESPACE_ENTER
+@@ -491,7 +500,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -764,7 +819,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              std::map<std::string, std::string> data;
-@@ -505,7 +505,7 @@ OCIO_NAMESPACE_ENTER
+@@ -505,7 +514,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -773,7 +828,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConfigRcPtr config = GetEditableConfig(self);
-@@ -514,7 +514,7 @@ OCIO_NAMESPACE_ENTER
+@@ -514,7 +523,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -782,7 +837,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -534,7 +534,7 @@ OCIO_NAMESPACE_ENTER
+@@ -534,7 +543,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -791,7 +846,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -554,7 +554,7 @@ OCIO_NAMESPACE_ENTER
+@@ -554,7 +563,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -800,7 +855,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -573,7 +573,7 @@ OCIO_NAMESPACE_ENTER
+@@ -573,7 +582,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -809,7 +864,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -624,7 +624,7 @@ OCIO_NAMESPACE_ENTER
+@@ -624,7 +633,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -818,7 +873,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConfigRcPtr config = GetEditableConfig(self);
-@@ -646,7 +646,7 @@ OCIO_NAMESPACE_ENTER
+@@ -646,7 +655,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -827,7 +882,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -679,7 +679,7 @@ OCIO_NAMESPACE_ENTER
+@@ -679,7 +688,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -836,7 +891,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -709,7 +709,7 @@ OCIO_NAMESPACE_ENTER
+@@ -709,7 +718,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -845,7 +900,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -717,7 +717,7 @@ OCIO_NAMESPACE_ENTER
+@@ -717,7 +726,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -854,7 +909,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -736,7 +736,7 @@ OCIO_NAMESPACE_ENTER
+@@ -736,7 +745,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -863,7 +918,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -841,7 +841,7 @@ OCIO_NAMESPACE_ENTER
+@@ -841,7 +850,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -872,7 +927,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConfigRcPtr config = GetEditableConfig(self);
-@@ -862,7 +862,7 @@ OCIO_NAMESPACE_ENTER
+@@ -862,7 +871,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -881,7 +936,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -882,7 +882,7 @@ OCIO_NAMESPACE_ENTER
+@@ -882,7 +891,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -890,7 +945,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -908,7 +908,7 @@ OCIO_NAMESPACE_ENTER
+@@ -908,7 +917,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -899,7 +954,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -929,7 +929,7 @@ OCIO_NAMESPACE_ENTER
+@@ -929,7 +938,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -908,7 +963,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -948,7 +948,7 @@ OCIO_NAMESPACE_ENTER
+@@ -948,7 +957,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
@@ -917,7 +972,7 @@ index 42ea872..24152fd 100644
          {
              OCIO_PYTRY_ENTER()
              ConstConfigRcPtr config = GetConstConfig(self, true);
-@@ -977,7 +977,7 @@ OCIO_NAMESPACE_ENTER
+@@ -977,7 +986,7 @@ OCIO_NAMESPACE_ENTER
              OCIO_PYTRY_EXIT(NULL)
          }
          
