@@ -4,9 +4,21 @@
 %filter_setup
 }
 
+# enable bootstrap to workaround pdftex crasher:
+# https://bugzilla.redhat.com/show_bug.cgi?id=1546964
+# disable/omit when that is fixed
+%if 0%{?fedora} > 27
+%global bootstrap 1
+%endif
+
+%if ! 0%{?bootstrap}
+%global docs 1
+%global tests 1
+%endif
+
 Name:           OpenColorIO
 Version:        1.1.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -29,6 +41,7 @@ BuildRequires:  help2man
 BuildRequires:  python2-markupsafe
 BuildRequires:  python2-setuptools
 
+%if 0%{?docs}
 # Needed for pdf documentation generation
 BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
 # Fonts
@@ -46,6 +59,7 @@ BuildRequires:  texlive-parskip texlive-multirow texlive-titlesec
 BuildRequires:  texlive-framed texlive-threeparttable texlive-wrapfig
 # Other
 BuildRequires:  texlive-hyphen-base
+%endif
 
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
@@ -74,6 +88,11 @@ BuildRequires:  yaml-cpp-devel >= 0.5.0
 #BuildRequires:  python-pygments
 #BuildRequires:  python-setuptools
 #BuildRequires:  python-sphinx
+
+%if !0%{?docs}
+# upgrade path for when/if docs are not included
+Obsoletes: %{name}-doc < %{version}-%{release}
+%endif
 
 
 %description
@@ -122,8 +141,8 @@ rm -f ext/yaml*
 %build
 rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
-       -DOCIO_BUILD_DOCS=ON \
-       -DOCIO_BUILD_TESTS=ON \
+       -DOCIO_BUILD_DOCS=%{?doc:ON}%{?!doc:OFF} \
+       -DOCIO_BUILD_TESTS=%{?tests:ON}%{?!tests:OFF} \
        -DOCIO_PYGLUE_SONAME=OFF \
        -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
@@ -149,11 +168,13 @@ help2man -N -s 1 %{?fedora:--version-string=%{version}} \
 help2man -N -s 1 %{?fedora:--version-string=%{version}} \
          -o %{buildroot}%{_mandir}/man1/ociobakelut.1 \
          src/apps/ociobakelut/ociobakelut
-
-# Move installed documentation back so it doesn't conflict with the main package
 popd
+
+%if 0%{?docs}
+# Move installed documentation back so it doesn't conflict with the main package
 mkdir _tmpdoc
 mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
+%endif
 
 # Fix location of cmake files.
 mkdir -p %{buildroot}%{_datadir}/cmake/Modules
@@ -181,8 +202,10 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 %{_bindir}/*
 %{_mandir}/man1/*
 
+%if 0%{?docs}
 %files doc
 %doc _tmpdoc/*
+%endif
 
 %files devel
 %{_datadir}/cmake/Modules/*
@@ -193,6 +216,10 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Tue Feb 20 2018 Rex Dieter <rdieter@fedoraproject.org> - 1.1.0-4
+- support %%bootstrap (no docs, no tests)
+- enable bootstrap mode on f28+ to workaround bug #1546964
+
 * Mon Feb 19 2018 Adam Williamson <awilliam@redhat.com> - 1.1.0-3
 - Fix build with yaml-cpp 0.6+ (patch out bogus hidden visibility)
 - Fix build with GCC 8 (issues in Python bindings, upstream PR #518)
