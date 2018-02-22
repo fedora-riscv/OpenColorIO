@@ -134,7 +134,7 @@ rm -f ext/yaml*
 %build
 rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
-       -DOCIO_BUILD_DOCS=%{?doc:ON}%{?!doc:OFF} \
+       -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
        -DOCIO_BUILD_TESTS=%{?tests:ON}%{?!tests:OFF} \
        -DOCIO_PYGLUE_SONAME=OFF \
        -DUSE_EXTERNAL_YAML=TRUE \
