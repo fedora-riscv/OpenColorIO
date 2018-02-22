@@ -4,13 +4,6 @@
 %filter_setup
 }
 
-# enable bootstrap to workaround pdftex crasher:
-# https://bugzilla.redhat.com/show_bug.cgi?id=1546964
-# disable/omit when that is fixed
-%if 0%{?fedora} > 27
-%global bootstrap 1
-%endif
-
 %if ! 0%{?bootstrap}
 %global docs 1
 %global tests 1
@@ -18,7 +11,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -216,6 +209,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Thu Feb 22 2018 Adam Williamson <awilliam@redhat.com> - 1.1.0-6
+- Rebuild with bootstrap disabled, so we get docs again
+
 * Thu Feb 22 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.1.0-5
 - Rebuild
 
