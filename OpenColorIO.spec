@@ -1,8 +1,8 @@
 # Filter provides from Python libraries
-%{?filter_setup:
-%filter_provides_in %{python2_sitearch}.*\.so$
-%filter_setup
-}
+#%{?filter_setup:
+#%filter_provides_in %{python2_sitearch}.*\.so$
+#%filter_setup
+#}
 
 %if ! 0%{?bootstrap}
 %global docs 1
@@ -29,7 +29,7 @@ Patch2:         ocio-1.1.0-yamlcpp060.patch
 Patch3:         ocio-1.1.0-gcc8.patch
 
 # Utilities
-BuildRequires:  cmake
+BuildRequires:  cmake gcc-c++
 BuildRequires:  help2man
 BuildRequires:  python2-markupsafe
 BuildRequires:  python2-setuptools
@@ -57,7 +57,7 @@ BuildRequires:  texlive-hyphen-base
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-#BuildRequires:  OpenImageIO-devel
+BuildRequires:  OpenImageIO-devel
 BuildRequires:  OpenEXR-devel
 
 # Libraries
@@ -82,7 +82,7 @@ BuildRequires:  yaml-cpp-devel >= 0.5.0
 #BuildRequires:  python-setuptools
 #BuildRequires:  python-sphinx
 
-%if !0%{?docs}
+%if ! 0%{?docs}
 # upgrade path for when/if docs are not included
 Obsoletes: %{name}-doc < %{version}-%{release}
 %endif
@@ -179,8 +179,7 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 #pushd build && make test
 
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %files
