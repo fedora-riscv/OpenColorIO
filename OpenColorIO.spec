@@ -137,6 +137,7 @@ rm -rf build && mkdir build && pushd build
        -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
        -DOCIO_BUILD_TESTS=%{?tests:ON}%{?!tests:OFF} \
        -DOCIO_PYGLUE_SONAME=OFF \
+       -DPYTHON=%{__python2} \
        -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
        -DUSE_EXTERNAL_LCMS=TRUE \
