@@ -1,9 +1,3 @@
-# Filter provides from Python libraries
-#%{?filter_setup:
-#%filter_provides_in %{python2_sitearch}.*\.so$
-#%filter_setup
-#}
-
 %if ! 0%{?bootstrap}
 %global docs 1
 %global tests 1
@@ -11,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -31,8 +25,8 @@ Patch3:         ocio-1.1.0-gcc8.patch
 # Utilities
 BuildRequires:  cmake gcc-c++
 BuildRequires:  help2man
-BuildRequires:  python2-markupsafe
-BuildRequires:  python2-setuptools
+BuildRequires:  python3-markupsafe
+BuildRequires:  python3-setuptools
 
 %if 0%{?docs}
 # Needed for pdf documentation generation
@@ -61,7 +55,7 @@ BuildRequires:  OpenImageIO-devel
 BuildRequires:  OpenEXR-devel
 
 # Libraries
-BuildRequires:  python2-devel
+BuildRequires:  python3-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  freeglut-devel
@@ -137,7 +131,7 @@ rm -rf build && mkdir build && pushd build
        -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
        -DOCIO_BUILD_TESTS=%{?tests:ON}%{?!tests:OFF} \
        -DOCIO_PYGLUE_SONAME=OFF \
-       -DPYTHON=%{__python2} \
+       -DPYTHON=%{__python3} \
        -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
        -DUSE_EXTERNAL_LCMS=TRUE \
@@ -145,6 +139,7 @@ rm -rf build && mkdir build && pushd build
 %ifnarch x86_64
        -DOCIO_USE_SSE=OFF \
 %endif
+       -DOpenGL_GL_PREFERENCE=GLVND \
        ../
 
 %make_build
@@ -189,7 +184,7 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
-%{python2_sitearch}/*.so
+%{python3_sitearch}/*.so
 
 %files tools
 %{_bindir}/*
@@ -209,6 +204,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Mon Sep 24 2018 Richard Shaw <hobbes1069@gmail.com> - 1.1.0-9
+- Obsolete Python2 library and build Python3 library.
+
 * Thu Aug 23 2018 Nicolas Chauvet <kwizart@gmail.com> - 1.1.0-8
 - Rebuilt for glew 2.1.0
 
