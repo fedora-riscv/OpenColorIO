@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -21,6 +21,8 @@ Patch2:         ocio-1.1.0-yamlcpp060.patch
 # Fix build of Python bindings with GCC 8
 # https://github.com/imageworks/OpenColorIO/pull/518
 Patch3:         ocio-1.1.0-gcc8.patch
+Patch4:         ocio-oiio2.patch
+Patch5:         ocio-glext_h.patch
 
 # Utilities
 BuildRequires:  cmake gcc-c++
@@ -204,6 +206,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Thu Dec 13 2018 Richard Shaw <hobbes1069@gmail.com> - 1.1.0-10
+- Add patch for OIIO 2.0 and mesa glext.h header changes.
+
 * Mon Sep 24 2018 Richard Shaw <hobbes1069@gmail.com> - 1.1.0-9
 - Obsolete Python2 library and build Python3 library.
 
