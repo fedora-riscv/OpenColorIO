@@ -102,7 +102,6 @@ Command line tools for %{name}.
 %package doc
 BuildArch:      noarch
 Summary:        API Documentation for %{name}
-Group:          Documentation
 Requires:       %{name} = %{version}-%{release}
 
 %description doc
@@ -111,7 +110,6 @@ API documentation for %{name}.
 
 %package devel
 Summary:        Development libraries and headers for %{name}
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
