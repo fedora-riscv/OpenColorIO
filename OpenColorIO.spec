@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -204,6 +204,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Thu Dec 13 2018 Richard Shaw <hobbes1069@gmail.com> - 1.1.0-10
 - Add patch for OIIO 2.0 and mesa glext.h header changes.
 
