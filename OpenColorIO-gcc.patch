@@ -10,47 +10,9 @@ Subject: [PATCH] Fix Linux compilation Fix gcc 5.4.0 build breaks Fix the temp
  src/pyglue/PyAllocationTransform.cpp |  1 -
  3 files changed, 15 insertions(+), 13 deletions(-)
 
---- a/src/core/Lut1DOp.cpp
-+++ b/src/core/Lut1DOp.cpp
-@@ -188,7 +188,8 @@ OCIO_NAMESPACE_ENTER
-         {
-             return simple_lut[clamp(index, 0.0f, maxIndex)];
-         }
--        
-+
-+#if defined(OCIO_UNIT_TEST) || !defined(USE_SSE)
-         void Lut1D_Nearest(float* rgbaBuffer, long numPixels, const Lut1D & lut)
-         {
-             float maxIndex[3];
-@@ -218,6 +219,7 @@ OCIO_NAMESPACE_ENTER
-                 rgbaBuffer += 4;
-             }
-         }
-+#endif
- #ifdef USE_SSE
-         void Lut1D_Nearest_SSE(float* rgbaBuffer, long numPixels, const Lut1D & lut)
-         {
 --- a/src/core/MathUtils.cpp
 +++ b/src/core/MathUtils.cpp
-@@ -327,17 +327,6 @@ OCIO_NAMESPACE_ENTER
-         GetV4Sum(vout, vout, v2);
-     }
-     
--    namespace
--    {
--    
--    void GetMxbResult(float* vout, float* m, float* x, float* v)
--    {
--        GetM44V4Product(vout, m, x);
--        GetV4Sum(vout, vout, v);
--    }
--    
--    } // anon namespace
--    
-     bool GetMxbInverse(float* mout, float* vout,
-                        const float* m_, const float* v_)
-     {
-@@ -372,6 +361,18 @@ OCIO_NAMESPACE_USING
+@@ -374,6 +374,18 @@ OCIO_NAMESPACE_USING
  
  #include "UnitTest.h"
  

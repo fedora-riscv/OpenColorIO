@@ -4,31 +4,50 @@
 %endif
 
 Name:           OpenColorIO
-Version:        1.1.0
-Release:        11%{?dist}
+Version:        1.1.1
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
 Source0:        https://github.com/imageworks/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:         OpenColorIO-gcc.patch
-Patch1:         OpenColorIO-setuptools.patch
+
+# Work with system libraries instead of bundled.
+Patch0:         OpenColorIO-setuptools.patch
 # Fix build against yaml-cpp 0.6.0+
 # This patch is fine for our case (building against system yaml-cpp)
 # but probably a bit too simple-minded to upstream as-is. See
 # https://github.com/imageworks/OpenColorIO/issues/517
-Patch2:         ocio-1.1.0-yamlcpp060.patch
-# Fix build of Python bindings with GCC 8
-# https://github.com/imageworks/OpenColorIO/pull/518
-Patch3:         ocio-1.1.0-gcc8.patch
-Patch4:         ocio-oiio2.patch
-Patch5:         ocio-glext_h.patch
+Patch1:         ocio-1.1.0-yamlcpp060.patch
+Patch2:         ocio-glext_h.patch
 
 # Utilities
 BuildRequires:  cmake gcc-c++
 BuildRequires:  help2man
+BuildRequires:  python3
 BuildRequires:  python3-markupsafe
 BuildRequires:  python3-setuptools
+
+# Libraries
+BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
+BuildRequires:  libX11-devel libXmu-devel libXi-devel
+BuildRequires:  freeglut-devel
+BuildRequires:  glew-devel
+BuildRequires:  python3-devel
+BuildRequires:  zlib-devel
+
+# WARNING: OpenColorIO and OpenImageIO are cross dependent.
+# If an ABI incompatible update is done in one, the other also needs to be
+# rebuilt.
+BuildRequires:  OpenImageIO-devel
+BuildRequires:  OpenEXR-devel
+
+#######################
+# Unbundled libraries #
+#######################
+BuildRequires:  tinyxml-devel
+BuildRequires:  lcms2-devel
+BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 %if 0%{?docs}
 # Needed for pdf documentation generation
@@ -50,26 +69,6 @@ BuildRequires:  texlive-framed texlive-threeparttable texlive-wrapfig
 BuildRequires:  texlive-hyphen-base
 %endif
 
-# WARNING: OpenColorIO and OpenImageIO are cross dependent.
-# If an ABI incompatible update is done in one, the other also needs to be
-# rebuilt.
-BuildRequires:  OpenImageIO-devel
-BuildRequires:  OpenEXR-devel
-
-# Libraries
-BuildRequires:  python3-devel
-BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
-BuildRequires:  libX11-devel libXmu-devel libXi-devel
-BuildRequires:  freeglut-devel
-BuildRequires:  glew-devel
-BuildRequires:  zlib-devel
-
-#######################
-# Unbundled libraries #
-#######################
-BuildRequires:  tinyxml-devel
-BuildRequires:  lcms2-devel
-BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 # The following bundled projects are only used for document generation.
 #BuildRequires:  python-docutils
@@ -129,8 +128,8 @@ rm -f ext/yaml*
 rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
        -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
+       -DOCIO_BUILD_PYGLUE=OFF \
        -DOCIO_BUILD_TESTS=%{?tests:ON}%{?!tests:OFF} \
-       -DOCIO_PYGLUE_SONAME=OFF \
        -DPYTHON=%{__python3} \
        -DUSE_EXTERNAL_YAML=TRUE \
        -DUSE_EXTERNAL_TINYXML=TRUE \
@@ -184,7 +183,7 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
-%{python3_sitearch}/*.so
+#{python3_sitearch}/*.so
 
 %files tools
 %{_bindir}/*
@@ -198,12 +197,16 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 %files devel
 %{_datadir}/cmake/Modules/*
 %{_includedir}/OpenColorIO/
-%{_includedir}/PyOpenColorIO/
+#{_includedir}/PyOpenColorIO/
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 
 %changelog
+* Wed Apr 03 2019 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-1
+- Update to 1.1.1.
+- Removing python glue module as python 3 is not currently supported.
+
 * Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
