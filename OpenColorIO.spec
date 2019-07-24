@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -203,6 +203,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Wed Apr 03 2019 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-1
 - Update to 1.1.1.
 - Removing python glue module as python 3 is not currently supported.
