@@ -29,6 +29,7 @@ BuildRequires:  python3-markupsafe
 BuildRequires:  python3-setuptools
 
 # Libraries
+BuildRequires:  boost-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  freeglut-devel
