@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -204,8 +204,11 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
-* Fri Oct 18 2019 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-3
+* Fri Oct 18 2019 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-4
 - Rebuild for yaml-cpp 0.6.3.
+
+* Tue Sep 17 2019 Gwyn Ciesla <gwync@protonmail.com> - 1.1.1-3
+- Rebuilt for new freeglut
 
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
