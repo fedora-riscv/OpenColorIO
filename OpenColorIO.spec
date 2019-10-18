@@ -10,7 +10,7 @@ Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
-Source0:        https://github.com/imageworks/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
 
 # Work with system libraries instead of bundled.
 Patch0:         OpenColorIO-setuptools.patch
