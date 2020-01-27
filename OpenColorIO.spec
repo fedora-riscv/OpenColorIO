@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -204,6 +204,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Mon Jan 27 2020 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-5
+- Rebuild for OpenImageIO 2.1.10.1.
+
 * Fri Oct 18 2019 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-4
 - Rebuild for yaml-cpp 0.6.3.
 
