@@ -5,12 +5,12 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        2%{?dist}
+Release:        6%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
-Source0:        https://github.com/imageworks/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
 
 # Work with system libraries instead of bundled.
 Patch0:         OpenColorIO-setuptools.patch
@@ -29,6 +29,7 @@ BuildRequires:  python3-markupsafe
 BuildRequires:  python3-setuptools
 
 # Libraries
+BuildRequires:  boost-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  freeglut-devel
@@ -203,6 +204,18 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Mon Jan 27 2020 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-5
+- Rebuild for OpenImageIO 2.1.10.1.
+
+* Fri Oct 18 2019 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-4
+- Rebuild for yaml-cpp 0.6.3.
+
+* Tue Sep 17 2019 Gwyn Ciesla <gwync@protonmail.com> - 1.1.1-3
+- Rebuilt for new freeglut
+
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
