@@ -41,7 +41,9 @@ BuildRequires:  OpenEXR-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
+%ifarch x86_64 ppc64le
 BuildRequires:  OpenImageIO-devel
+%endif
 
 #######################
 # Unbundled libraries #
