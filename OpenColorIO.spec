@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -53,6 +53,16 @@ BuildRequires:  yaml-cpp-devel >= 0.5.0
 %if 0%{?docs}
 # Needed for pdf documentation generation
 BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
+# Explicit "\usepackage" dependencies from OpenColorIO.tex
+# Note that sphinx.sty is bundled in OpenColorIO.
+BuildRequires:  tex(inputenc.sty)
+BuildRequires:  tex(cmap.sty)
+BuildRequires:  tex(fontenc.sty)
+BuildRequires:  tex(babel.sty)
+BuildRequires:  tex(times.sty)
+BuildRequires:  tex(fncychap.sty)
+BuildRequires:  tex(longtable.sty)
+BuildRequires:  tex(multirow.sty)
 # Fonts
 BuildRequires:  texlive-cm texlive-ec texlive-times texlive-helvetic
 BuildRequires:  texlive-courier
@@ -204,6 +214,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Wed May 20 2020 Tom Callaway <spot@fedoraproject.org> - 1.1.1-8
+- update tex buildrequires
+
 * Sat Mar 14 2020 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-7
 - Rebuild to fix bad timing with mass rebuild and OIIO 2.0.x -> 2.1.x.
 
