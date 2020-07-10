@@ -56,6 +56,7 @@ BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
 # Explicit "\usepackage" dependencies from OpenColorIO.tex
 # Note that sphinx.sty is bundled in OpenColorIO.
 BuildRequires:  tex(inputenc.sty)
+# Map tables
 BuildRequires:  tex(cmap.sty)
 BuildRequires:  tex(fontenc.sty)
 BuildRequires:  tex(babel.sty)
@@ -66,15 +67,13 @@ BuildRequires:  tex(multirow.sty)
 # Fonts
 BuildRequires:  texlive-cm texlive-ec texlive-times texlive-helvetic
 BuildRequires:  texlive-courier
-# Map tables
-BuildRequires:  texlive-cmap
 # Font maps
 BuildRequires:  texlive-updmap-map
 # Babel
 BuildRequires:  texlive-babel-english
 # Styles
 BuildRequires:  texlive-fancyhdr texlive-fancybox texlive-mdwtools
-BuildRequires:  texlive-parskip texlive-multirow texlive-titlesec
+BuildRequires:  texlive-parskip texlive-titlesec
 BuildRequires:  texlive-framed texlive-threeparttable texlive-wrapfig
 # Other
 BuildRequires:  texlive-hyphen-base
