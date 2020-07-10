@@ -40,7 +40,14 @@ BuildRequires:  zlib-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
+# OpenImageIO on EL 8 is x86_64 and ppc64le only.
+%if 0%{?rhel} >= 8 
+%ifarch x86_64 ppc64le
 BuildRequires:  OpenImageIO-devel
+%endif
+%else
+BuildRequires:  OpenImageIO-devel
+%endif
 BuildRequires:  OpenEXR-devel
 
 #######################
