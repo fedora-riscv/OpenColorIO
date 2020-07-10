@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -36,14 +36,12 @@ BuildRequires:  freeglut-devel
 BuildRequires:  glew-devel
 BuildRequires:  python3-devel
 BuildRequires:  zlib-devel
-BuildRequires:  OpenEXR-devel
 
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-%ifarch x86_64 ppc64le
 BuildRequires:  OpenImageIO-devel
-%endif
+BuildRequires:  OpenEXR-devel
 
 #######################
 # Unbundled libraries #
@@ -55,18 +53,27 @@ BuildRequires:  yaml-cpp-devel >= 0.5.0
 %if 0%{?docs}
 # Needed for pdf documentation generation
 BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
+# Explicit "\usepackage" dependencies from OpenColorIO.tex
+# Note that sphinx.sty is bundled in OpenColorIO.
+BuildRequires:  tex(inputenc.sty)
+# Map tables
+BuildRequires:  tex(cmap.sty)
+BuildRequires:  tex(fontenc.sty)
+BuildRequires:  tex(babel.sty)
+BuildRequires:  tex(times.sty)
+BuildRequires:  tex(fncychap.sty)
+BuildRequires:  tex(longtable.sty)
+BuildRequires:  tex(multirow.sty)
 # Fonts
 BuildRequires:  texlive-cm texlive-ec texlive-times texlive-helvetic
 BuildRequires:  texlive-courier
-# Map tables
-BuildRequires:  texlive-cmap
 # Font maps
 BuildRequires:  texlive-updmap-map
 # Babel
 BuildRequires:  texlive-babel-english
 # Styles
 BuildRequires:  texlive-fancyhdr texlive-fancybox texlive-mdwtools
-BuildRequires:  texlive-parskip texlive-multirow texlive-titlesec
+BuildRequires:  texlive-parskip texlive-titlesec
 BuildRequires:  texlive-framed texlive-threeparttable texlive-wrapfig
 # Other
 BuildRequires:  texlive-hyphen-base
@@ -206,8 +213,11 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
-* Fri Feb 14 2020 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-7
-- Rebuild with OpenImageIO.
+* Wed May 20 2020 Tom Callaway <spot@fedoraproject.org> - 1.1.1-8
+- update tex buildrequires
+
+* Sat Mar 14 2020 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-7
+- Rebuild to fix bad timing with mass rebuild and OIIO 2.0.x -> 2.1.x.
 
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
