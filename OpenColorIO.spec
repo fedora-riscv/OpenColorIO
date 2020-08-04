@@ -51,6 +51,7 @@ BuildRequires:  lcms2-devel
 BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 %if 0%{?docs}
+BuildRequires:  python3-sphinx
 # Needed for pdf documentation generation
 BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
 # Explicit "\usepackage" dependencies from OpenColorIO.tex
@@ -64,6 +65,11 @@ BuildRequires:  tex(times.sty)
 BuildRequires:  tex(fncychap.sty)
 BuildRequires:  tex(longtable.sty)
 BuildRequires:  tex(multirow.sty)
+BuildRequires:  tex(tabulary.sty)
+BuildRequires:  tex(upquote.sty)
+BuildRequires:  tex(capt-of.sty)
+BuildRequires:  tex(needspace.sty)
+BuildRequires:  tex(cm-super-ts1.enc)
 # Fonts
 BuildRequires:  texlive-cm texlive-ec texlive-times texlive-helvetic
 BuildRequires:  texlive-courier
@@ -78,14 +84,6 @@ BuildRequires:  texlive-framed texlive-threeparttable texlive-wrapfig
 # Other
 BuildRequires:  texlive-hyphen-base
 %endif
-
-
-# The following bundled projects are only used for document generation.
-#BuildRequires:  python-docutils
-#BuildRequires:  python-jinja2
-#BuildRequires:  python-pygments
-#BuildRequires:  python-setuptools
-#BuildRequires:  python-sphinx
 
 %if ! 0%{?docs}
 # upgrade path for when/if docs are not included
@@ -135,7 +133,6 @@ rm -f ext/yaml*
 
 
 %build
-rm -rf build && mkdir build && pushd build
 %cmake -DOCIO_BUILD_STATIC=OFF \
        -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
        -DOCIO_BUILD_PYGLUE=OFF \
@@ -148,17 +145,16 @@ rm -rf build && mkdir build && pushd build
 %ifnarch x86_64
        -DOCIO_USE_SSE=OFF \
 %endif
-       -DOpenGL_GL_PREFERENCE=GLVND \
-       ../
+       -DOpenGL_GL_PREFERENCE=GLVND
 
-%make_build
+%cmake_build
 
 
 %install
-pushd build
-%make_install
+%cmake_install
 
 # Generate man pages
+pushd %{_vpath_builddir}
 mkdir -p %{buildroot}%{_mandir}/man1
 help2man -N -s 1 %{?fedora:--version-string=%{version}} \
          -o %{buildroot}%{_mandir}/man1/ociocheck.1 \
