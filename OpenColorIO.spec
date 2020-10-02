@@ -57,6 +57,10 @@ BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
 # Explicit "\usepackage" dependencies from OpenColorIO.tex
 # Note that sphinx.sty is bundled in OpenColorIO.
 BuildRequires:  tex(inputenc.sty)
+BuildRequires:  tex(amsmath.sty)
+BuildRequires:  tex(amssymb.sty)
+BuildRequires:  tex(varwidth.sty)
+BuildRequires:  tex(fancyvrb.sty)
 # Map tables
 BuildRequires:  tex(cmap.sty)
 BuildRequires:  tex(fontenc.sty)
