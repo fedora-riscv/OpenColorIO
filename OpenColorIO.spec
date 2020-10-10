@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -51,7 +51,7 @@ BuildRequires:  lcms2-devel
 BuildRequires:  yaml-cpp-devel >= 0.5.0
 
 %if 0%{?docs}
-BuildRequires:  python3-sphinx
+BuildRequires:  python3-sphinx-latex
 # Needed for pdf documentation generation
 BuildRequires:  texlive-latex-bin-bin texlive-gsftopk-bin texlive-dvips
 # Explicit "\usepackage" dependencies from OpenColorIO.tex
@@ -209,6 +209,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Fri Oct  9 2020 Orion Poplawski <orion@nwra.com> - 1.1.1-12
+- Add BR python3-sphinx-latex
+
 * Fri Sep 04 2020 Richard Shaw <hobbes1069@gmail.com> - 1.1.1-11
 - Rebuild for OpenImageIO 2.2.
 
