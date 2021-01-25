@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        1.1.1
-Release:        12%{?dist}
+Release:        13%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -209,6 +209,9 @@ find %{buildroot} -name "*.cmake" -exec mv {} %{buildroot}%{_datadir}/cmake/Modu
 
 
 %changelog
+* Mon Jan 25 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Fri Oct  9 2020 Orion Poplawski <orion@nwra.com> - 1.1.1-12
 - Add BR python3-sphinx-latex
 
