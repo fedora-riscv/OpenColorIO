@@ -20,6 +20,8 @@ Patch0:         OpenColorIO-setuptools.patch
 # https://github.com/imageworks/OpenColorIO/issues/517
 Patch1:         ocio-1.1.0-yamlcpp060.patch
 Patch2:         ocio-glext_h.patch
+# https://bugzilla.redhat.com/show_bug.cgi?id=1923344
+Patch3:         ocio-null_pointer.patch
 
 # Utilities
 BuildRequires:  cmake gcc-c++
@@ -73,8 +75,6 @@ BuildRequires:  tex(cm-super-ts1.enc)
 # Fonts
 BuildRequires:  texlive-cm texlive-ec texlive-times texlive-helvetic
 BuildRequires:  texlive-courier
-# Font maps
-BuildRequires:  texlive-updmap-map
 # Babel
 BuildRequires:  texlive-babel-english
 # Styles

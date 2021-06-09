@@ -1,0 +1,15 @@
+Index: OpenColorIO-1.1.1/src/core/ImageDesc.cpp
+===================================================================
+--- OpenColorIO-1.1.1.orig/src/core/ImageDesc.cpp
++++ OpenColorIO-1.1.1/src/core/ImageDesc.cpp
+@@ -57,8 +57,8 @@ OCIO_NAMESPACE_ENTER
+             os << "gData=" << planarImg->getGData() << ", ";
+             os << "bData=" << planarImg->getBData() << ", ";
+             os << "aData=" << planarImg->getAData() << ", ";
+-            os << "width=" << packedImg->getWidth() << ", ";
+-            os << "height=" << packedImg->getHeight() << ", ";
++            os << "width=" << planarImg->getWidth() << ", ";
++            os << "height=" << planarImg->getHeight() << ", ";
+             os << "yStrideBytes=" << planarImg->getYStrideBytes() << "";
+             os << ">";
+         }
