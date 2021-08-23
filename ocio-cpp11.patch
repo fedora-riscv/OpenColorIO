@@ -1,0 +1,13 @@
+Index: OpenColorIO-2.0.1/src/OpenColorIO/Config.cpp
+===================================================================
+--- OpenColorIO-2.0.1.orig/src/OpenColorIO/Config.cpp
++++ OpenColorIO-2.0.1/src/OpenColorIO/Config.cpp
+@@ -1141,7 +1141,7 @@ public:
+ 
+ 
+ // Instantiate the cache with the right types.
+-template class ProcessorCache<std::size_t, ProcessorRcPtr>;
++extern template class ProcessorCache<std::size_t, ProcessorRcPtr>;
+ 
+ 
+ ///////////////////////////////////////////////////////////////////////////

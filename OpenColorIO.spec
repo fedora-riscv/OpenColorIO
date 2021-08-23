@@ -19,6 +19,9 @@ Patch0:         ocio-install.patch
 # https://github.com/AcademySoftwareFoundation/OpenColorIO/pull/1432
 Patch1:         1432.patch
 
+# Violates c++11 (definition shall appear at most one in a program)
+Patch2:         ocio-cpp11.patch
+
 # OIIO is only built for these arches due to Libraw
 %if 0%{?rhel} >= 8
 ExclusiveArch:  x86_64 ppc64le
