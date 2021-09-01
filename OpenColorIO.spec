@@ -4,7 +4,7 @@
 %endif
 
 Name:           OpenColorIO
-Version:        2.0.1
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
@@ -14,13 +14,6 @@ Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive
 
 # https://github.com/AcademySoftwareFoundation/OpenColorIO/issues/1296
 Patch0:         ocio-install.patch
-
-# For OpenEXR/Imath 3
-# https://github.com/AcademySoftwareFoundation/OpenColorIO/pull/1432
-Patch1:         1432.patch
-
-# Violates c++11 (definition shall appear at most one in a program)
-Patch2:         ocio-cpp11.patch
 
 # OIIO is only built for these arches due to Libraw
 %if 0%{?rhel} >= 8
@@ -170,11 +163,15 @@ popd
 
 %files devel
 %{_includedir}/OpenColorIO/
+%{_libdir}/cmake/%{name}/
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 
 
 %changelog
+* Wed Sep 01 2021 Richard Shaw <hobbes1069@gmail.com> - 2.1.0-1
+- Update to 2.1.0.
+
 * Fri Aug 13 2021 Richard Shaw <hobbes1069@gmail.com> - 2.0.1-1
 - Update to 2.0.1.
 
