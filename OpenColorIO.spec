@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        2.1.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -169,6 +169,9 @@ popd
 
 
 %changelog
+* Sun Oct 03 2021 Richard Shaw <hobbes1069@gmail.com> - 2.1.0-3
+- Rebuild for OpenImageIO 2.3.
+
 * Sat Oct 02 2021 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 2.1.0-2
 - Rebuild for OpenEXR/Imath 3.1
 
