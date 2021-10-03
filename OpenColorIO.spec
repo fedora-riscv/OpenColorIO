@@ -107,7 +107,8 @@ Development libraries and headers for %{name}.
 
 
 %build
-%cmake -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
+%cmake -DCMAKE_CXX_STANDARD=14 \
+       -DOCIO_BUILD_DOCS=%{?docs:ON}%{?!docs:OFF} \
        -DOCIO_BUILD_TESTS=%{?tests:ON}%{?!tests:OFF} \
 	   -DOCIO_USE_HEADLESS=ON \
 	   -DOCIO_INSTALL_EXT_PACKAGES=NONE \
