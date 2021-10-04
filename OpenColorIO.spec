@@ -15,6 +15,9 @@ Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive
 # https://github.com/AcademySoftwareFoundation/OpenColorIO/issues/1296
 Patch0:         ocio-install.patch
 
+# For compatibility with OIIO 2.3.
+Patch1:         https://patch-diff.githubusercontent.com/raw/AcademySoftwareFoundation/OpenColorIO/pull/1488.patch
+
 # OIIO is only built for these arches due to Libraw
 %if 0%{?rhel} >= 8
 ExclusiveArch:  x86_64 ppc64le
