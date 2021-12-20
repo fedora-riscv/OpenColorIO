@@ -121,7 +121,7 @@ Development libraries and headers for %{name}.
 %cmake_install
 
 # Remove static libs
-#find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
+find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
 
 # Generate man pages
 pushd %{__cmake_builddir}/src/apps
