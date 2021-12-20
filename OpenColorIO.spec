@@ -4,19 +4,13 @@
 %endif
 
 Name:           OpenColorIO
-Version:        2.1.0
-Release:        3%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
 Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
-
-# https://github.com/AcademySoftwareFoundation/OpenColorIO/issues/1296
-Patch0:         ocio-install.patch
-
-# For compatibility with OIIO 2.3.
-Patch1:         https://patch-diff.githubusercontent.com/raw/AcademySoftwareFoundation/OpenColorIO/pull/1488.patch
 
 # OIIO is only built for these arches due to Libraw
 %if 0%{?rhel} >= 8
@@ -127,7 +121,7 @@ Development libraries and headers for %{name}.
 %cmake_install
 
 # Remove static libs
-find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
+#find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
 
 # Generate man pages
 pushd %{__cmake_builddir}/src/apps
@@ -141,8 +135,8 @@ popd
 
 
 %check
-# Testing passes locally in mock but fails on the fedora build servers.
-#pushd build && make test
+# Testing gpu fails due to lack of diaplay. Can it be faked?
+#ctest
 
 
 %ldconfig_scriptlets
@@ -173,6 +167,9 @@ popd
 
 
 %changelog
+* Fri Dec 17 2021 Richard Shaw <hobbes1069@gmail.com> - 2.1.1-1
+- Update to 2.1.1.
+
 * Sun Oct 03 2021 Richard Shaw <hobbes1069@gmail.com> - 2.1.0-3
 - Rebuild for OpenImageIO 2.3.
 
