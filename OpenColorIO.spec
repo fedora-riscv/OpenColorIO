@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        2.1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -169,6 +169,9 @@ popd
 
 
 %changelog
+* Thu Feb 10 2022 Orion Poplawski <orion@nwra.com> - 2.1.1-3
+- Rebuild for glew 2.2
+
 * Wed Jan 19 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.1.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
