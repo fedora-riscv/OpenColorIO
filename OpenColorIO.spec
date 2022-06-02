@@ -170,7 +170,7 @@ popd
 
 %changelog
 * Thu Jun 02 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-1
-- Update to 2.1.1.
+- Update to 2.1.2.
 
 * Thu Feb 10 2022 Orion Poplawski <orion@nwra.com> - 2.1.1-3
 - Rebuild for glew 2.2
