@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        2.1.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -169,6 +169,9 @@ popd
 
 
 %changelog
+* Tue Jun 21 2022 Sérgio Basto <sergio@serjux.com> - 2.1.2-2
+- Rebuild for Python 3.11 and openvdb-9.1.0
+
 * Thu Jun 02 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-1
 - Update to 2.1.2.
 
