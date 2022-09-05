@@ -6,7 +6,7 @@
 
 Name:           OpenColorIO
 Version:        1.0.9
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -15,6 +15,7 @@ URL:            http://opencolorio.org/
 # https://github.com/imageworks/OpenColorIO/tarball/v1.0.9
 Source0:        %{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-yaml_cpp3.patch
+Patch1:         OpenColorIO-glext_h.patch
 
 # Utilities
 BuildRequires:  cmake
@@ -158,6 +159,9 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 
 
 %changelog
+* Mon Sep 05 2022 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-5
+- Add patch to deal with glext header build error.
+
 * Tue Oct 04 2016 Richard Shaw <hobbes1069@gmail.com> - 1.0.9-4.1
 - Rebuild for updated OpenImageIO.
 
