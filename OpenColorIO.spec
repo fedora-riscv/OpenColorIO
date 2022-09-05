@@ -1,13 +1,8 @@
 # Filter provides from Python libraries
 %{?filter_setup:
-%filter_provides_in %{python_sitearch}.*\.so$
+%filter_provides_in %{python2_sitearch}.*\.so$
 %filter_setup
 }
-
-# Use cmake28 package on EL builds.
-%if 0%{?rhel} && 0%{?rhel} <= 6
-%global cmake %cmake28 -DCMAKE_SKIP_RPATH=OFF
-%endif
 
 Name:           OpenColorIO
 Version:        1.0.9
@@ -22,11 +17,7 @@ Source0:        %{name}-%{version}.tar.gz
 Patch0:         OpenColorIO-yaml_cpp3.patch
 
 # Utilities
-%if 0%{?rhel} && 0%{?rhel} <= 6
-BuildRequires:  cmake28
-%else
 BuildRequires:  cmake
-%endif
 BuildRequires:  help2man
 BuildRequires:  python-markupsafe
 
@@ -36,7 +27,7 @@ BuildRequires:  python-markupsafe
 BuildRequires:  OpenImageIO-devel
 
 # Libraries
-BuildRequires:  python-devel
+BuildRequires:  python2-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  freeglut-devel
@@ -93,8 +84,7 @@ Development libraries and headers for %{name}.
 
 
 %prep
-%setup -q
-%patch0 -p1 -b .yaml3
+%autosetup -p1
 
 # Remove what bundled libraries
 rm -f ext/lcms*
@@ -143,8 +133,7 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 #pushd build && make test
 
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %files
@@ -152,7 +141,7 @@ mv %{buildroot}%{_docdir}/%{name}/* _tmpdoc/
 %{_libdir}/*.so.*
 %dir %{_datadir}/ocio
 %{_datadir}/ocio/setup_ocio.sh
-%{python_sitearch}/*.so
+%{python2_sitearch}/*.so
 
 %files tools
 %{_bindir}/*
