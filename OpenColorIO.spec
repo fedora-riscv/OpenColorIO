@@ -1,4 +1,6 @@
-%if ! 0%{?bootstrap} || ! 0%{?rhel}
+%if 0%{?bootstrap} || 0%{?rhel}
+# Don't define anything
+%else
 %global docs 1
 %global tests 1
 %endif
@@ -15,7 +17,7 @@ Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive
 Patch0:         OCIO-strlen.patch
 
 # OIIO is only built for these arches due to Libraw
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} >= 8 && 0%{?rhel} < 9
 ExclusiveArch:  x86_64 ppc64le
 %endif
 
@@ -30,7 +32,6 @@ BuildRequires:  python3-setuptools
 BuildRequires:  OpenEXR-devel
 BuildRequires:  boost-devel
 BuildRequires:  expat-devel
-BuildRequires:  freeglut-devel
 BuildRequires:  glew-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
@@ -40,6 +41,10 @@ BuildRequires:  python3-devel
 BuildRequires:  python3-pip
 BuildRequires:  pystring-devel
 BuildRequires:  zlib-devel
+%if ! 0%{?rhel}
+BuildRequires:  freeglut-devel
+BuildRequires:  openshadinglanguage-devel
+%endif
 
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
