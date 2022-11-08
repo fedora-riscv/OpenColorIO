@@ -32,6 +32,7 @@ BuildRequires:  freeglut-devel
 BuildRequires:  glew-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
+BuildRequires:  minizip-devel
 BuildRequires:  opencv-devel
 BuildRequires:  pybind11-devel
 BuildRequires:  python3-devel
