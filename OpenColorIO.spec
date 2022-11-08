@@ -5,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        2.2.0
-Release:        1%{?dist}
+Release:        0.1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -42,9 +42,9 @@ BuildRequires:  zlib-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-BuildRequires:  OpenImageIO-devel
-BuildRequires:  OpenImageIO-iv
-BuildRequires:  OpenImageIO-utils
+#BuildRequires:  OpenImageIO-devel
+#BuildRequires:  OpenImageIO-iv
+#BuildRequires:  OpenImageIO-utils
 
 #######################
 # Unbundled libraries #
@@ -167,8 +167,9 @@ popd
 
 
 %changelog
-* Wed Nov 02 2022 Richard Shaw <hobbes1069@gmail.com> - 2.2.0-1
+* Wed Nov 02 2022 Richard Shaw <hobbes1069@gmail.com> - 2.2.0-0.1
 - Update to 2.2.0.
+- Bootstrap build with OIIO for soname bump.
 
 * Fri Oct 07 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-4
 - Rebuild for OpenImageIO 2.4.4.2.
