@@ -44,9 +44,9 @@ BuildRequires:  zlib-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-BuildRequires:  OpenImageIO-devel
-BuildRequires:  OpenImageIO-iv
-BuildRequires:  OpenImageIO-utils
+#BuildRequires:  OpenImageIO-devel
+#BuildRequires:  OpenImageIO-iv
+#BuildRequires:  OpenImageIO-utils
 
 #######################
 # Unbundled libraries #
@@ -171,6 +171,7 @@ popd
 %changelog
 * Mon Nov 14 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-5
 - Rebuild for yaml-cpp 0.7.0.
+- Disable BR for OIIO to bootstrap.
 
 * Fri Oct 07 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-4
 - Rebuild for OpenImageIO 2.4.4.2.
