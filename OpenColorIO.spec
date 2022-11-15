@@ -126,14 +126,14 @@ Development libraries and headers for %{name}.
 find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
 
 # Generate man pages
-pushd %{__cmake_builddir}/src/apps
-mkdir -p %{buildroot}%{_mandir}/man1
-for app in ociobakelut ociocheck ociochecklut ocioconvert ociolutimage ociomakeclf ocioperf ociowrite; do \
-help2man -N -s 1 %{?fedora:--version-string=%{version}} \
-         -o %{buildroot}%{_mandir}/man1/$app.1 \
-         $app/$app
-done
-popd
+#pushd %{__cmake_builddir}/src/apps
+#mkdir -p %{buildroot}%{_mandir}/man1
+#for app in ociobakelut ociocheck ociochecklut ocioconvert ociolutimage ociomakeclf ocioperf ociowrite; do \
+#help2man -N -s 1 %{?fedora:--version-string=%{version}} \
+#         -o %{buildroot}%{_mandir}/man1/$app.1 \
+#         $app/$app
+#done
+#popd
 
 
 %check
@@ -154,7 +154,7 @@ popd
 %files tools
 %{_bindir}/*
 %{_datadir}/ocio/
-%{_mandir}/man1/*
+#{_mandir}/man1/*
 
 %if 0%{?docs}
 %files doc
