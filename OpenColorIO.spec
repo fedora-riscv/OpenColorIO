@@ -4,8 +4,8 @@
 %endif
 
 Name:           OpenColorIO
-Version:        2.1.2
-Release:        4%{?dist}
+Version:        2.1.3
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -169,6 +169,9 @@ popd
 
 
 %changelog
+* Fri Jan 13 2023 Richard Shaw <hobbes1069@gmail.com> - 2.1.3-1
+- Update to 2.1.3.
+
 * Fri Oct 07 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-4
 - Rebuild for OpenImageIO 2.4.4.2.
 
