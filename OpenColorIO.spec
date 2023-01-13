@@ -6,15 +6,13 @@
 %endif
 
 Name:           OpenColorIO
-Version:        2.1.2
-Release:        4%{?dist}
+Version:        2.2.1
+Release:        1%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
 URL:            http://opencolorio.org/
 Source0:        https://github.com/AcademySoftwareFoundation/OpenColorIO/archive/v%{version}/%{name}-%{version}.tar.gz
-
-Patch0:         OCIO-strlen.patch
 
 # OIIO is only built for these arches due to Libraw
 %if 0%{?rhel} >= 8 && 0%{?rhel} < 9
@@ -29,12 +27,13 @@ BuildRequires:  python3-markupsafe
 BuildRequires:  python3-setuptools
 
 # Libraries
-BuildRequires:  OpenEXR-devel
+BuildRequires:  cmake(OpenEXR)
 BuildRequires:  boost-devel
 BuildRequires:  expat-devel
 BuildRequires:  glew-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
+BuildRequires:  minizip-ng-devel >= 3.0.6
 BuildRequires:  opencv-devel
 BuildRequires:  pybind11-devel
 BuildRequires:  python3-devel
@@ -49,7 +48,7 @@ BuildRequires:  openshadinglanguage-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
-BuildRequires:  OpenImageIO-devel
+BuildRequires:  cmake(OpenImageIO)
 BuildRequires:  OpenImageIO-iv
 BuildRequires:  OpenImageIO-utils
 
@@ -57,7 +56,7 @@ BuildRequires:  OpenImageIO-utils
 # Unbundled libraries #
 #######################
 BuildRequires:  lcms2-devel
-BuildRequires:  yaml-cpp-devel >= 0.5.0
+BuildRequires:  yaml-cpp-devel >= 0.7.0
 
 %if 0%{?docs}
 BuildRequires:  doxygen
@@ -109,6 +108,9 @@ Development libraries and headers for %{name}.
 %prep
 %autosetup -p1 -n %{name}-%{version}%{?relcan:-rc%{relcan}}
 
+# Fedora maps minzip-ng back to minizip so work around it here:
+sed -i "s/minizip-ng/minizip/g" src/OpenColorIO/OCIOZArchive.cpp src/apps/ocioarchive/main.cpp
+
 
 %build
 %cmake -DCMAKE_CXX_STANDARD=14 \
@@ -119,6 +121,9 @@ Development libraries and headers for %{name}.
 %ifnarch x86_64
        -DOCIO_USE_SSE=OFF \
 %endif
+       -Dminizip-ng_LIBRARY=%{_libdir}/libminizip.so \
+	   -Dminizip-ng_INCLUDE_DIR=%{_includedir}/minizip \
+	   -Dminizip-ng_DIR=TRUE \
        -DOpenGL_GL_PREFERENCE=GLVND
 
 %cmake_build
@@ -131,14 +136,14 @@ Development libraries and headers for %{name}.
 find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
 
 # Generate man pages
-pushd %{__cmake_builddir}/src/apps
-mkdir -p %{buildroot}%{_mandir}/man1
-for app in ociobakelut ociocheck ociochecklut ocioconvert ociolutimage ociomakeclf ocioperf ociowrite; do \
-help2man -N -s 1 %{?fedora:--version-string=%{version}} \
-         -o %{buildroot}%{_mandir}/man1/$app.1 \
-         $app/$app
-done
-popd
+#pushd %{__cmake_builddir}/src/apps
+#mkdir -p %{buildroot}%{_mandir}/man1
+#for app in ociobakelut ociocheck ociochecklut ocioconvert ociolutimage ociomakeclf ocioperf ociowrite; do \
+#help2man -N -s 1 %{?fedora:--version-string=%{version}} \
+#         -o %{buildroot}%{_mandir}/man1/$app.1 \
+#         $app/$app
+#done
+#popd
 
 
 %check
@@ -159,7 +164,7 @@ popd
 %files tools
 %{_bindir}/*
 %{_datadir}/ocio/
-%{_mandir}/man1/*
+#{_mandir}/man1/*
 
 %if 0%{?docs}
 %files doc
@@ -174,6 +179,16 @@ popd
 
 
 %changelog
+* Thu Jan 12 2023 Richard Shaw <hobbes1069@gmail.com> - 2.2.1-1
+- Update to 2.2.1.
+
+* Tue Nov 15 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-5.1
+- Rebuild post OIIO bootstrap.
+
+* Mon Nov 14 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-5
+- Rebuild for yaml-cpp 0.7.0.
+- Disable BR for OIIO to bootstrap.
+
 * Fri Oct 07 2022 Richard Shaw <hobbes1069@gmail.com> - 2.1.2-4
 - Rebuild for OpenImageIO 2.4.4.2.
 
