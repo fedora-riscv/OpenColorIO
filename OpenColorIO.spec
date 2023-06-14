@@ -32,6 +32,7 @@ BuildRequires:  boost-devel
 BuildRequires:  expat-devel
 BuildRequires:  freeglut-devel
 BuildRequires:  glew-devel
+BuildRequires:  imath-devel
 BuildRequires:  libX11-devel libXmu-devel libXi-devel
 BuildRequires:  mesa-libGL-devel mesa-libGLU-devel
 BuildRequires:  minizip-ng-devel >= 3.0.6
