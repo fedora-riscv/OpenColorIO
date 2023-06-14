@@ -45,9 +45,11 @@ BuildRequires:  zlib-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
+%if ! 0%{?bootstrap}
 BuildRequires:  cmake(OpenImageIO)
 BuildRequires:  OpenImageIO-iv
 BuildRequires:  OpenImageIO-utils
+%endif
 
 #######################
 # Unbundled libraries #
