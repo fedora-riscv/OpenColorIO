@@ -1,4 +1,4 @@
-%if ! 0%{?bootstrap} || ! 0%{?rhel}
+%if ! 0%{?bootstrap} && ! 0%{?rhel}
 %global docs 1
 %global tests 1
 %endif
