@@ -1,4 +1,3 @@
-%global bootstrap 1
 %if ! 0%{?bootstrap} && ! 0%{?rhel}
 %global docs 1
 %global tests 1
@@ -6,7 +5,7 @@
 
 Name:           OpenColorIO
 Version:        2.2.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Enables color transforms and image display across graphics apps
 
 License:        BSD
@@ -180,6 +179,9 @@ find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
 
 
 %changelog
+* Mon Jul 03 2023 Python Maint <python-maint@redhat.com> - 2.2.1-4
+- Rebuilt for Python 3.12
+
 * Mon Jul 03 2023 Python Maint <python-maint@redhat.com> - 2.2.1-3
 - Bootstrap for Python 3.12
 
