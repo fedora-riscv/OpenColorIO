@@ -1,3 +1,8 @@
+%bcond_without bootstrap
+%if %{with bootstrap}
+%global bootstrap 1
+%endif
+
 %if ! 0%{?bootstrap} || ! 0%{?rhel}
 %global docs 1
 %global tests 1
@@ -43,9 +48,11 @@ BuildRequires:  zlib-devel
 # WARNING: OpenColorIO and OpenImageIO are cross dependent.
 # If an ABI incompatible update is done in one, the other also needs to be
 # rebuilt.
+%if %{without bootstrap}
 BuildRequires:  cmake(OpenImageIO)
 BuildRequires:  OpenImageIO-iv
 BuildRequires:  OpenImageIO-utils
+%endif
 
 #######################
 # Unbundled libraries #
@@ -174,6 +181,9 @@ find %{buildroot} -type f -name "*.a" -exec rm -f {} \;
 
 
 %changelog
+* Sat Jul 08 2023 Liu Yang <Yang.Liu.sn@gmail.com> - 2.2.1-2~bootstrap
+- Bootstrap for riscv64.
+
 * Wed Jan 18 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.2.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
